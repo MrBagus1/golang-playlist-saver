@@ -3,21 +3,16 @@ package web
 import (
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
-	"time"
 )
 
-type UserRegisterRequest struct {
-	Name     string    `json:"name"`
-	Email    string    `json:"email"`
-	Password string    `json:"password"`
-	Birthday time.Time `json:"birthday"`
-	Gender   string    `json:"gender"`
+type UserLoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
-func (u UserRegisterRequest) Validate() error {
+func (u UserLoginRequest) Validate() error {
 	return validation.ValidateStruct(&u,
 		//validasi Name tidak boleh kosong
-		validation.Field(&u.Name, validation.Required),
 		//Validasi email regex, dan tidak boleh kosong
 		validation.Field(&u.Email, validation.Required, is.Email),
 		//Validasi password tidak boleh kosong, dan minimal panjang 6 dan max 12

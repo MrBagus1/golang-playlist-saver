@@ -2,25 +2,30 @@ package repository
 
 import (
 	"context"
-	"gorm.io/gorm"
+	"playlist-saver/app/config/mysql"
 	"playlist-saver/exceptions"
 	"playlist-saver/model/domain"
 )
 
 type userRepositoryImpl struct {
-	Conn *gorm.DB
+	client mysql.Client
 }
 
-func InitMysqlRepository(Conn *gorm.DB) UserRepository {
-	return &userRepositoryImpl{Conn}
+func NewUserRepository(client mysql.Client) UserRepository {
+	return &userRepositoryImpl{client}
 }
 
 func (repository *userRepositoryImpl) Register(ctx context.Context, user domain.User) domain.User {
-	err := repository.Conn.WithContext(ctx).Create(&user).Error
+	user.Status.Name = "testing"
+	err := repository.client.Conn().Debug().WithContext(ctx).Create(&user).Error
 	exceptions.PanicIfError(err)
 	return user
 }
 
-func (repository *userRepositoryImpl) Login(ctx context.Context, email string, password string) (domain.User, error) {
-	repository.Conn.WithContext().Find()
+func (repository *userRepositoryImpl) Login(ctx context.Context, email string) domain.User {
+	user := domain.User{}
+	err := repository.client.Conn().Debug().WithContext(ctx).Where("email = ? ", email).First(&user).Error
+	exceptions.PanicIfError(err)
+
+	return user
 }
