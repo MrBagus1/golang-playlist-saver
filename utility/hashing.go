@@ -1,4 +1,4 @@
-package exceptions
+package utility
 
 import "golang.org/x/crypto/bcrypt"
 
