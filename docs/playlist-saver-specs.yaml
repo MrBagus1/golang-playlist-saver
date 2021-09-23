@@ -347,6 +347,12 @@ paths:
                     type: string
                   status:
                     type: string
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+
   "/user/playlist/share":
     post:
       tags:
