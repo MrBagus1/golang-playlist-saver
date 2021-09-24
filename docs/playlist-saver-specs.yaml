@@ -285,10 +285,6 @@ paths:
                   type: string
                 gender:
                   type: string
-                status:
-                  type: string
-                role_id:
-                  type: number
       responses:
         '200':
           description: Success Register
@@ -319,13 +315,10 @@ paths:
                             type: string
                           updated_at:
                             type: string
-                      roles:
-                        type: object
-                        properties:
-                          role_names:
-                            type: string
-                          role_id:
-                            type: number
+                      role:
+                        type: string
+
+
   "/user/login":
     post:
       tags:
@@ -354,6 +347,12 @@ paths:
                     type: string
                   status:
                     type: string
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+
   "/user/playlist/share":
     post:
       tags:
