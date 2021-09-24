@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Playlist Saver using Youtube API
-  description: RESTful API to save and manage your own playlist. Free user can add Max 10 playlist, premium can add more than 10 playlist
+  description: RESTful API to save and manage your own playlist. Free servuser can add Max 10 playlist, premium can add more than 10 playlist
   version: 1.0.0
 servers:
   - url: 'http://localhost:8000/api/v1'
@@ -157,7 +157,7 @@ paths:
       tags:
         - Route to Get Something
       summary: "Get Playlist's Item by its ID"
-      description: "To get your Playlist's Items (songs,video etc) by the id OR you need to be added in someone Playlist to find another user's playlist"
+      description: "To get your Playlist's Items (songs,video etc) by the id OR you need to be added in someone Playlist to find another servuser's playlist"
       parameters:
         - name: playlist_id
           in: path
@@ -243,7 +243,7 @@ paths:
       tags:
         - Route to Get Something
       summary: Show all playlist owned by user_id
-      description: "Get all playlist owned by user id, prevent accessing the other user_id JWT by conditional if later"
+      description: "Get all playlist owned by servuser id, prevent accessing the other user_id JWT by conditional if later"
       parameters:
         - name: user_id
           in: path
@@ -268,7 +268,7 @@ paths:
       tags:
         - Route to Post Something
       summary: Register User
-      description: Register user
+      description: Register servuser
       requestBody:
         content:
           application/json:
@@ -323,8 +323,8 @@ paths:
     post:
       tags:
         - Route to Post Something
-      summary: login user
-      description : login user
+      summary: login servuser
+      description : login servuser
       requestBody:
         content:
           application/json:
@@ -358,7 +358,7 @@ paths:
       tags:
         - Route to Post Something
       summary: To share playlist to another
-      description: To share playlist to another user
+      description: To share playlist to another servuser
       requestBody:
         content:
           application/json:
@@ -408,7 +408,7 @@ paths:
       tags:
         - edit something here
       summary: Edit User's Data
-      description : Edit user's Data
+      description : Edit servuser's Data
       requestBody:
         content:
           application/json:

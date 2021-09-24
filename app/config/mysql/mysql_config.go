@@ -2,13 +2,12 @@ package mysql
 
 import (
 	"fmt"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 	"log"
 	"playlist-saver/app/config"
 	"playlist-saver/exceptions"
-	"playlist-saver/model/domain"
-
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
+	"playlist-saver/model/record"
 )
 
 type Client interface {
@@ -22,7 +21,7 @@ func New(configuration config.Config) Client {
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	exceptions.PanicIfError(err)
 
-	err = db.AutoMigrate(domain.User{}, domain.Status{})
+	err = db.AutoMigrate(record.User{}, record.Status{})
 	exceptions.PanicIfError(err)
 
 	log.Println("MySql Connected")

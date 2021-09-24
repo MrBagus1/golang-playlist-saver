@@ -4,15 +4,15 @@ import (
 	"github.com/labstack/echo/v4"
 	"playlist-saver/exceptions"
 	"playlist-saver/model/web"
-	"playlist-saver/service"
+	"playlist-saver/service/servuser"
 	"playlist-saver/utility"
 )
 
 type UserControllers struct {
-	userService service.UserService
+	userService servuser.UserService
 }
 
-func NewUserController(userService service.UserService) UserController {
+func NewUserController(userService servuser.UserService) UserController {
 	return &UserControllers{userService: userService}
 }
 
