@@ -49,12 +49,8 @@ func main() {
 	}
 	routesInit.Registration(e)
 
-	// add middleware and routes
-	// ...
-	s := http.Server{
-		Addr:    ":8080",
-		Handler: e,
-		//ReadTimeout: 30 * time.Second, // customize http.Server timeouts
+	if err := e.Start(":8080"); err != http.ErrServerClosed {
+		log.Fatal(err)
 	}
 
 }

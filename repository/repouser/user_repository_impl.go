@@ -17,6 +17,7 @@ func NewUserRepository(client mysql.Client) UserRepository {
 
 func (repository *userRepositoryImpl) Register(ctx context.Context, user record.User) record.User {
 	user.Status.Name = "testing"
+
 	err := repository.client.Conn().Debug().WithContext(ctx).Create(&user).Error
 	exceptions.PanicIfError(err)
 	return user
