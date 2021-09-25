@@ -1,8 +1,7 @@
 package web
 
 import (
-	validation "github.com/go-ozzo/ozzo-validation"
-	"github.com/go-ozzo/ozzo-validation/is"
+	"playlist-saver/service/servuser"
 	"time"
 )
 
@@ -14,13 +13,14 @@ type UserRegisterRequest struct {
 	Gender   string    `json:"gender"`
 }
 
-func (u UserRegisterRequest) Validate() error {
-	return validation.ValidateStruct(&u,
-		//validasi Name tidak boleh kosong
-		validation.Field(&u.Name, validation.Required),
-		//Validasi email regex, dan tidak boleh kosong
-		validation.Field(&u.Email, validation.Required, is.Email),
-		//Validasi password tidak boleh kosong, dan minimal panjang 6 dan max 12
-		validation.Field(&u.Password, validation.Required, validation.Length(6, 12)),
-	)
+func (request *UserRegisterRequest) ToDomainService() servuser.User {
+	u := servuser.User{}
+
+	u.Name = request.Name
+	u.Password = request.Password
+	u.Email = request.Email
+	u.Birthday = request.Birthday
+	u.Gender = request.Gender
+
+	return u
 }

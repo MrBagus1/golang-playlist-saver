@@ -16,6 +16,6 @@ func (c1 *ControllerList) Registration(e *echo.Echo) {
 	apiV1 := e.Group("/api/v1")
 
 	//	USER THINGS
-	apiV1.POST("/user/register", c1.UserController.Register)
-	apiV1.POST("/user/login", c1.UserController.Login)
+	apiV1.POST("/users/register", c1.UserController.Register)
+	apiV1.POST("/users/login", c1.UserController.Login)
 }

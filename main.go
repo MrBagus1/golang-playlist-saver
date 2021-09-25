@@ -11,8 +11,8 @@ import (
 	"playlist-saver/app/routes"
 	"playlist-saver/controller"
 	"playlist-saver/exceptions"
-	"playlist-saver/repository"
-	"playlist-saver/service"
+	"playlist-saver/repository/repouser"
+	"playlist-saver/service/servuser"
 	"strconv"
 
 	"github.com/joho/godotenv"
@@ -39,8 +39,8 @@ func main() {
 		SecretJWT: os.Getenv("JWT_SECRET"),
 		ExpiredIn: EXPIRED,
 	}
-	userRepo := repository.NewUserRepository(mysqlClient)
-	userService := service.NewUserService(userRepo, &ConfigJWT)
+	userRepo := repouser.NewUserRepository(mysqlClient)
+	userService := servuser.NewUserService(userRepo, &ConfigJWT)
 	userCtrl := controller.NewUserController(userService)
 
 	routesInit := routes.ControllerList{
@@ -49,15 +49,7 @@ func main() {
 	}
 	routesInit.Registration(e)
 
-	// add middleware and routes
-	// ...
-	s := http.Server{
-		Addr:    ":8080",
-		Handler: e,
-		//ReadTimeout: 30 * time.Second, // customize http.Server timeouts
-	}
-	log.Print("Server is running under", s.Addr)
-	if err := s.ListenAndServe(); err != http.ErrServerClosed {
+	if err := e.Start(":8080"); err != http.ErrServerClosed {
 		log.Fatal(err)
 	}
 
