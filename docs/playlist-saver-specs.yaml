@@ -6,12 +6,16 @@ info:
 servers:
   - url: 'http://localhost:8000/api/v1'
 paths:
-  "/search":
+  "/search/{name}":
     get:
       tags:
         - Route to Get Something
       description : Finding the youtube things
       summary : to youtube
+      parameters:
+        - name: name
+          in: path
+          description: searchCtrl playlist name
       responses:
         '200':
           description: Success get youtube data
@@ -30,14 +34,10 @@ paths:
                       type: object
                       properties:
                         id:
-                          type: number
+                          type: string
                         title:
                           type: string
-                        category_name:
-                          type: string
-                        category_id:
-                          type: number
-                        duration:
+                        channelId:
                           type: string
                         published_at:
                           type: string
@@ -319,7 +319,7 @@ paths:
                         type: string
 
 
-  "/user/login":
+  "/users/login":
     post:
       tags:
         - Route to Post Something
