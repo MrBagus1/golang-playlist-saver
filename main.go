@@ -9,9 +9,12 @@ import (
 	"playlist-saver/app/config/mysql"
 	_middleware "playlist-saver/app/middleware"
 	"playlist-saver/app/routes"
-	"playlist-saver/controller"
+	"playlist-saver/controller/searchCtrl"
+	"playlist-saver/controller/userCtrl"
 	"playlist-saver/exceptions"
+	"playlist-saver/repository/reposearch"
 	"playlist-saver/repository/repouser"
+	"playlist-saver/service/servsearch"
 	"playlist-saver/service/servuser"
 	"strconv"
 
@@ -41,11 +44,16 @@ func main() {
 	}
 	userRepo := repouser.NewUserRepository(mysqlClient)
 	userService := servuser.NewUserService(userRepo, &ConfigJWT)
-	userCtrl := controller.NewUserController(userService)
+	userCtrl := userCtrl.NewUserController(userService)
+
+	searchRepo := reposearch.NewSearchRepository(mysqlClient)
+	searchService := servsearch.NewSearchService(searchRepo)
+	searchCtrl := searchCtrl.NewSearchController(searchService)
 
 	routesInit := routes.ControllerList{
-		JWTMiddleware:  ConfigJWT.Init(),
-		UserController: userCtrl,
+		JWTMiddleware:    ConfigJWT.Init(),
+		UserController:   userCtrl,
+		SearchController: searchCtrl,
 	}
 	routesInit.Registration(e)
 
