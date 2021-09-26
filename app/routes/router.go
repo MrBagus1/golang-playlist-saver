@@ -3,12 +3,14 @@ package routes
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"playlist-saver/controller"
+	"playlist-saver/controller/searchCtrl"
+	"playlist-saver/controller/userCtrl"
 )
 
 type ControllerList struct {
-	JWTMiddleware  middleware.JWTConfig
-	UserController controller.UserController
+	JWTMiddleware    middleware.JWTConfig
+	UserController   userCtrl.UserController
+	SearchController searchCtrl.SearchController
 }
 
 func (c1 *ControllerList) Registration(e *echo.Echo) {
@@ -18,4 +20,8 @@ func (c1 *ControllerList) Registration(e *echo.Echo) {
 	//	USER THINGS
 	apiV1.POST("/users/register", c1.UserController.Register)
 	apiV1.POST("/users/login", c1.UserController.Login)
+
+	//	SEARCH
+	apiV1.GET("/search/:name", c1.SearchController.SearchYtByParam)
+
 }
