@@ -3,7 +3,6 @@ package servsearch
 import (
 	"context"
 	"errors"
-	"log"
 	"playlist-saver/repository/reposearch"
 )
 
@@ -30,18 +29,27 @@ func (sr *SearchServiceImpl) GetByUrlId(ctx context.Context, Id string) YoutubeD
 }
 
 func (sr *SearchServiceImpl) SearchYtByParam(ctx context.Context, Search string) []YoutubeData {
-	dataYoutube := YoutubeData{}
+
 	if len(Search) == 0 {
 		panic(errors.New("What you want to searchCtrl, dont leave the params blank"))
 	}
 
 	dataFinal := make([]YoutubeData, 0)
 	youtubeResult := sr.SearchRepository.SearchYtByParam(ctx, Search)
-	log.Print("Print data dari Youtube Reesult Service", len(youtubeResult))
-	dataYoutube.FromRecordYoutube(youtubeResult)
+	//log.Print("Print data dari Youtube Reesult Service", len(youtubeResult))
+	//dataYoutube.FromRecordYoutube(youtubeResult)
 
-	dataFinal = append(dataFinal, dataYoutube)
-	log.Print("Print daata Service", len(dataFinal))
+	for _, values := range youtubeResult {
+		dataYoutube := YoutubeData{}
+		dataYoutube.Id = values.Id
+		dataYoutube.Title = values.Title
+		dataYoutube.ChannelId = values.ChannelId
+		dataYoutube.PublishedAt = values.PublishedAt
+		dataYoutube.Description = values.Description
+		dataFinal = append(dataFinal, dataYoutube)
+	}
+
+	//log.Print("Print daata Serviceee", len(dataFinal))
 
 	return dataFinal
 }

@@ -22,6 +22,6 @@ func (c1 *ControllerList) Registration(e *echo.Echo) {
 	apiV1.POST("/users/login", c1.UserController.Login)
 
 	//	SEARCH
-	apiV1.GET("/search/:name", c1.SearchController.SearchYtByParam)
+	apiV1.GET("/search", c1.SearchController.SearchYtByParam, middleware.JWTWithConfig(c1.JWTMiddleware))
 
 }
