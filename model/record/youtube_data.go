@@ -10,3 +10,5 @@ type YoutubeData struct {
 	PublishedAt string
 	Description string
 }
+
+//PlaylistDetail PlaylistDetail `gorm:"foreignKey: YoutubeId"`

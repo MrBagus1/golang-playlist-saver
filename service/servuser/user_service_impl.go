@@ -27,10 +27,11 @@ func (service *UserServiceImpl) Register(ctx context.Context, dataUser User) Use
 	exceptions.PanicIfError(err)
 	password, err := utility.HashPassword(dataUser.Password)
 	exceptions.PanicIfError(err)
-
 	dataUser.Password = password
+	dataUser.Status.Name = "FREE"
 
 	userRecord := dataUser.ToRecordUser()
+	log.Print("Test Recored", userRecord)
 	insertedUser := service.UserRepository.Register(ctx, userRecord)
 
 	dataUser.FromRecordUser(insertedUser)
