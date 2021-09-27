@@ -3,6 +3,7 @@ package servuser
 import (
 	"context"
 	"errors"
+	"log"
 	"playlist-saver/app/middleware"
 	"playlist-saver/exceptions"
 	"playlist-saver/repository/repouser"
@@ -43,7 +44,10 @@ func (service *UserServiceImpl) Login(ctx context.Context, email, password strin
 	}
 
 	userRecord := service.UserRepository.Login(ctx, email)
+	log.Print("Before hash", password)
+	log.Print("After hash", userRecord.Password)
 	match := utility.CheckPasswordHash(password, userRecord.Password)
+	log.Print("Booleana", match)
 
 	if !match {
 		panic(errors.New("email or password not match"))

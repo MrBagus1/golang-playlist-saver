@@ -12,6 +12,11 @@ paths:
         - Route to Get Something
       description : Finding the youtube things
       summary : to youtube
+      parameters:
+        - name: q
+          in: query
+          type: string
+          description: searchCtrl youtube things
       responses:
         '200':
           description: Success get youtube data
@@ -30,14 +35,10 @@ paths:
                       type: object
                       properties:
                         id:
-                          type: number
+                          type: string
                         title:
                           type: string
-                        category_name:
-                          type: string
-                        category_id:
-                          type: number
-                        duration:
+                        channelId:
                           type: string
                         published_at:
                           type: string
@@ -319,7 +320,7 @@ paths:
                         type: string
 
 
-  "/user/login":
+  "/users/login":
     post:
       tags:
         - Route to Post Something

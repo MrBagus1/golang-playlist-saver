@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"github.com/golang-jwt/jwt"
+	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"log"
 	"playlist-saver/exceptions"
@@ -46,4 +47,25 @@ func (jwtConf *ConfigJWT) GenerateToken(id int, name string, role string) string
 	exceptions.PanicIfError(err)
 
 	return t
+}
+
+func GetUserId(c echo.Context) int {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*jwtCustomClaims)
+	id := claims.UserId
+	return id
+}
+
+func GetUserName(c echo.Context) string {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*jwtCustomClaims)
+	name := claims.Name
+	return name
+}
+
+func GetUserRole(c echo.Context) string {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*jwtCustomClaims)
+	role := claims.Role
+	return role
 }
