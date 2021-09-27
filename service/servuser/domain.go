@@ -35,7 +35,9 @@ func (u *User) ToRecordUser() record.User {
 	recordUser := record.User{}
 	recordUser.Name = u.Name
 	recordUser.Email = u.Email
+	recordUser.Password = u.Password
 	recordUser.Birthday = u.Birthday
+	recordUser.Gender = u.Gender
 	recordUser.Role = u.Role
 	recordUser.Status.Name = u.Status.Name
 	recordUser.Status.CreatedAt = u.Status.CreatedAt
