@@ -1,0 +1,587 @@
+openapi: 3.0.3
+info:
+  title: Playlist Saver using Youtube API
+  description: RESTful API to save and manage your own playlist. Free servuser can add Max 10 playlist, premium can add more than 10 playlist
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8000/api/v1'
+paths:
+  "/search":
+    get:
+      tags:
+        - Route to Get Something
+      description : Finding the youtube things
+      summary : to youtube
+      parameters:
+        - name: q
+          in: query
+          type: string
+          description: searchCtrl youtube things
+      responses:
+        '200':
+          description: Success get youtube data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                  status:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        title:
+                          type: string
+                        channelId:
+                          type: string
+                        published_at:
+                          type: string
+                        description:
+                          type: string
+  "/playlist/create/":
+    post:
+      tags:
+        - Route to Post Something
+      description: Create your Own Playlist !
+      summary: create playlist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                user_id:
+                  type: number
+      responses:
+            '200':
+              description: Success createing your playlist
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      code:
+                        type: number
+                      status:
+                        type: string
+                      data:
+                        type: array
+                        items:
+                          type : object
+                          properties:
+                            name:
+                              type: string
+                            user_id:
+                              type: number
+                            created_at:
+                              type: string
+                            updated_at:
+                              type: string
+                            deleted_at:
+                              type: string
+  "/playlist/create-details":
+    post:
+      tags:
+        - Route to Post Something
+      description: add something to your playlist
+      summary: add something 2 playlist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                playlist_id:
+                  type: number
+                youtube_id:
+                  type: number
+      responses:
+        '200':
+          description: Success createing your playlist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                  status:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                       playlist_name:
+                          type : string
+                       playlist_id:
+                         type: number
+                       youtube_id:
+                         type: number
+                       created_at:
+                         type: string
+                       updated_at:
+                         type: string
+  "/playlist/data/{youtube_id}":
+    delete:
+      tags:
+        - delete your something
+      summary: delete your youtube things that in the playlist
+      description: delete the youtube data in the playlist
+      parameters:
+        - name: youtube_id
+          in : path
+          description: delete youtube data that stored in the playlist
+      responses:
+        '200':
+          description: success delete your youtube data from the playlist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code :
+                    type: string
+                  status:
+                    type: string
+
+  "/playlist/{playlist_id}":
+    get:
+      tags:
+        - Route to Get Something
+      summary: "Get Playlist's Item by its ID"
+      description: "To get your Playlist's Items (songs,video etc) by the id OR you need to be added in someone Playlist to find another servuser's playlist"
+      parameters:
+        - name: playlist_id
+          in: path
+          description: your own playlist_id
+      responses:
+        '200':
+          description: Success get your Playlist by ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  status:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/getPlaylist"
+    delete:
+      tags:
+        - delete your something
+      summary: delete playlist by ID
+      description: delete your playlist and all data by id
+      parameters:
+        - name: playlist_id
+          in : path
+          description: delete playlist by playlist_id
+      responses:
+        '200':
+          description: Success delete the playlist and all of the data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  status:
+                    type: string
+    put:
+      tags:
+        - edit something here
+      summary: Edit your Playlist by its ID
+      description: Edit your Playlist
+      parameters:
+        - name: playlist_id
+          in: path
+          description: edit your playlist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        '200':
+          description: Success edit your Playlist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  status:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      playlist_id:
+                        type: number
+                      playlist_name:
+                        type: string
+                      created_at:
+                        type: string
+                      updated_at:
+                        type: string
+
+  "/playlist/showall/{user_id}":
+    get:
+      tags:
+        - Route to Get Something
+      summary: Show all playlist owned by user_id
+      description: "Get all playlist owned by servuser id, prevent accessing the other user_id JWT by conditional if later"
+      parameters:
+        - name: user_id
+          in: path
+          description: All playlist owned by You
+      responses:
+        '200':
+          description: "Success get ALl your Playlist Data"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code :
+                    type: string
+                  status:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/getPlaylist"
+
+  "/user/register":
+    post:
+      tags:
+        - Route to Post Something
+      summary: Register User
+      description: Register servuser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                dob:
+                  type: string
+                gender:
+                  type: string
+      responses:
+        '200':
+          description: Success Register
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  status:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      dob:
+                        type: string
+                      status:
+                        type: object
+                        properties:
+                          status_name:
+                            type: string
+                          created_at:
+                            type: string
+                          updated_at:
+                            type: string
+                      role:
+                        type: string
+
+
+  "/users/login":
+    post:
+      tags:
+        - Route to Post Something
+      summary: login servuser
+      description : login servuser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Success Login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  status:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+
+  "/user/playlist/share":
+    post:
+      tags:
+        - Route to Post Something
+      summary: To share playlist to another
+      description: To share playlist to another servuser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                playlist_id:
+                  type: number
+                user_id:
+                  type: number
+      responses:
+        '200':
+          description: Success Share Playlist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                  status:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      share_id:
+                        type: number
+                      playlist_id:
+                        type: number
+                      user_id:
+                        type: number
+                      created_at:
+                        type: string
+                      updated_at:
+                        type: string
+                      deleted_at:
+                        type: string
+
+
+
+
+
+
+
+  "/user/edit/{user_id}":
+    put:
+      tags:
+        - edit something here
+      summary: Edit User's Data
+      description : Edit servuser's Data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                password:
+                  type: string
+                email:
+                  type: string
+                dob:
+                  type: string
+      responses:
+        '200':
+          description: Success Edit User's Data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  status:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      password:
+                        type: string
+                      email:
+                        type: string
+                      dob:
+                        type: string
+                      updated_at:
+                        type: string
+                      created_at:
+                        type: string
+
+  "/user/add/token/{user_id}":
+    post:
+      tags:
+        - Route to Post Something
+      description: User to add token to get Premium Features
+      summary: Add token to get Premium
+      parameters:
+        - name: user_id
+          in: path
+          description: Token to get Premium Features
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token_id:
+                  type: string
+      responses:
+        '200':
+          description: Success you got premium features
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  status:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      status_name:
+                        type: string
+                      user_name:
+                        type: string
+                      token_id:
+                        type: string
+                      created_at:
+                        type: string
+                      updated_at:
+                        type: string
+                      expired_at:
+                        type: string
+
+
+
+
+
+
+
+
+  "/admin/gacha/token":
+    get:
+      tags:
+        - Route to Get Something
+      description: Admin to get Token for Premium Account
+      summary: Admin get Token Premium for User
+      responses:
+        '200':
+          description: Success get token Data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                  status:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        token_id:
+                          type: string
+                        created_at:
+                          type: string
+                        updated_at:
+                          type: string
+
+
+
+
+
+
+
+
+
+components:
+  schemas:
+    getPlaylist:
+      type: array
+      items:
+        type: object
+        properties:
+          playlist_id:
+            type: number
+          playlist_name:
+            type: string
+          playlist_owner:
+            type: string
+          created_at:
+            type: string
+          updated_at:
+            type: string
+          searches:
+            type: array
+            items:
+              type: object
+              properties:
+                youtube_id:
+                  type: number
+                youtube_title:
+                  type: string
+                durations:
+                  type: string
+                published_at:
+                  type: string
+                description:
+                  type: string
+                category_name:
+                  type: string
+                category_id:
+                  type: number
+
+
+
+
+
+
