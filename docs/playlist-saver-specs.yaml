@@ -316,6 +316,51 @@ paths:
                       role:
                         type: string
 
+  "/users":
+    get:
+      tags:
+        - Route to Get Something
+      summary: Get all user data
+      description: get all user data
+
+      responses:
+        '200':
+          description: Success get All data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        email:
+                          type: string
+                        dob:
+                          type: string
+                        gender:
+                          type: string
+                        role:
+                          type: string
+                        createdAt:
+                          type: string
+                        updatedAt:
+                          type: string
+
+
+
+
+
+
+
 
   "/users/login":
     post:
