@@ -16,5 +16,6 @@ type User struct {
 	Role      string `gorm:"type:enum('ADMIN','USER');default:'USER'"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	Status    Status `gorm:"foreignKey:UserId"`
+	Status    Status     `gorm:"foreignKey:UserId"`
+	Playlist  []Playlist `gorm:"foreignKey:UserId"`
 }

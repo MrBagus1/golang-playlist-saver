@@ -6,7 +6,7 @@ import (
 )
 
 type YoutubeSearchResponse struct {
-	Id          string `json:"id"`
+	YoutubeLink string `json:"id"`
 	Title       string `json:"title"`
 	ChannelId   string `json:"channel_id"`
 	PublishedAt string `json:"published_at"`
@@ -16,7 +16,7 @@ type YoutubeSearchResponse struct {
 func (response *YoutubeSearchResponse) FromDomainService(u []servsearch.YoutubeData) {
 	responseData := make([]*YoutubeSearchResponse, 0)
 	for _, value := range u {
-		response.Id = value.Id
+		response.YoutubeLink = value.YoutubeLink
 		response.Title = value.Title
 		response.ChannelId = value.ChannelId
 		response.PublishedAt = value.PublishedAt

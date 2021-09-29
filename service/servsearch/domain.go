@@ -5,7 +5,7 @@ import (
 )
 
 type YoutubeData struct {
-	Id          string
+	YoutubeLink string
 	Title       string
 	ChannelId   string
 	PublishedAt string
@@ -13,7 +13,7 @@ type YoutubeData struct {
 }
 
 func (d *YoutubeData) FromRecordYoutubeNotArray(data record.YoutubeData) {
-	d.Id = data.Id
+	d.YoutubeLink = data.YoutubeLink
 	d.Title = data.Title
 	d.ChannelId = data.ChannelId
 	d.PublishedAt = data.PublishedAt

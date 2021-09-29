@@ -27,20 +27,22 @@ func (searcher *SearchRepositoryImpl) GetByUrlId(ctx context.Context, Id string)
 	return search
 }
 
-func (searcher *SearchRepositoryImpl) SearchYtByParam(ctx context.Context, Search string) []record.YoutubeData {
+func (searcher *SearchRepositoryImpl) SearchYtByParam(ctx context.Context, Search string) ([]record.YoutubeData, error) {
 	API_KEY := os.Getenv("YT_SECRET")
 	youtubeService, err := youtube.NewService(ctx, option.WithAPIKey(API_KEY))
 	if err != nil {
-		log.Fatalf("Error creating new YouTube client: %v", err)
+		return nil, err
 	}
 	youtubeData := make([]record.YoutubeData, 0)
 	searching := youtubeService.Search.List([]string{"id", "snippet"}).Q(Search).MaxResults(10)
 	response, err := searching.Do()
-	exceptions.PanicIfError(err)
+	if err !=nil {
+		return nil,err
+	}
 
 	for _, item := range response.Items {
 		youtubeRecord := record.YoutubeData{}
-		youtubeRecord.Id = item.Id.VideoId
+		youtubeRecord.YoutubeLink = item.Id.VideoId
 		youtubeRecord.ChannelId = item.Id.ChannelId
 		youtubeRecord.Title = item.Snippet.Title
 		youtubeRecord.PublishedAt = item.Snippet.PublishedAt
@@ -48,5 +50,27 @@ func (searcher *SearchRepositoryImpl) SearchYtByParam(ctx context.Context, Searc
 		youtubeData = append(youtubeData, youtubeRecord)
 	}
 
-	return youtubeData
+	return youtubeData,nil
+}
+
+func (searcher *SearchRepositoryImpl) SearchYtById(ctx context.Context, Id string) record.YoutubeData {
+	API_KEY := os.Getenv("YT_SECRET")
+	youtubeService, err := youtube.NewService(ctx, option.WithAPIKey(API_KEY))
+	if err != nil {
+		log.Fatalf("Error creating new YouTube client: %v", err)
+	}
+
+	searching := youtubeService.Search.List([]string{"id", "snippet"}).Q(Id).MaxResults(1)
+	response, err := searching.Do()
+	exceptions.PanicIfError(err)
+	youtubeRecord := record.YoutubeData{}
+	for _, item := range response.Items {
+		youtubeRecord.YoutubeLink = item.Id.VideoId
+		youtubeRecord.ChannelId = item.Id.ChannelId
+		youtubeRecord.Title = item.Snippet.Title
+		youtubeRecord.PublishedAt = item.Snippet.PublishedAt
+		youtubeRecord.Description = item.Snippet.Description
+	}
+
+	return youtubeRecord
 }
