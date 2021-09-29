@@ -44,7 +44,7 @@ paths:
                           type: string
                         description:
                           type: string
-  "/playlist/create/":
+  "/playlist":
     post:
       tags:
         - Route to Post Something
@@ -58,8 +58,6 @@ paths:
               properties:
                 name:
                   type: string
-                user_id:
-                  type: number
       responses:
             '200':
               description: Success createing your playlist
@@ -73,36 +71,36 @@ paths:
                       status:
                         type: string
                       data:
-                        type: array
-                        items:
-                          type : object
-                          properties:
-                            name:
-                              type: string
-                            user_id:
-                              type: number
-                            created_at:
-                              type: string
-                            updated_at:
-                              type: string
-                            deleted_at:
-                              type: string
-  "/playlist/create-details":
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          user_id:
+                            type: number
+                          created_at:
+                            type: string
+                          updated_at:
+                            type: string
+                          deleted_at:
+                            type: string
+  "/playlist/{playlistId}/data":
     post:
       tags:
         - Route to Post Something
       description: add something to your playlist
       summary: add something 2 playlist
+      parameters:
+        - name: songId
+          in: path
+          description: add song
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                playlist_id:
-                  type: number
                 youtube_id:
-                  type: number
+                  type: string
       responses:
         '200':
           description: Success createing your playlist
@@ -116,20 +114,19 @@ paths:
                   status:
                     type: string
                   data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                       playlist_name:
-                          type : string
-                       playlist_id:
-                         type: number
-                       youtube_id:
-                         type: number
-                       created_at:
-                         type: string
-                       updated_at:
-                         type: string
+                    type: object
+                    properties:
+                     playlist_name:
+                        type : string
+                     playlist_id:
+                       type: number
+                     youtube_id:
+                       type: number
+                     created_at:
+                       type: string
+                     updated_at:
+                       type: string
+
   "/playlist/data/{youtube_id}":
     delete:
       tags:
@@ -398,12 +395,6 @@ paths:
                       deleted_at:
                         type: string
 
-
-
-
-
-
-
   "/user/edit/{user_id}":
     put:
       tags:
@@ -498,13 +489,6 @@ paths:
                       expired_at:
                         type: string
 
-
-
-
-
-
-
-
   "/admin/gacha/token":
     get:
       tags:
@@ -534,11 +518,6 @@ paths:
                           type: string
                         updated_at:
                           type: string
-
-
-
-
-
 
 
 

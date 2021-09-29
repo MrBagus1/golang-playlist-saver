@@ -9,11 +9,17 @@ import (
 	"playlist-saver/app/config/mysql"
 	_middleware "playlist-saver/app/middleware"
 	"playlist-saver/app/routes"
+	"playlist-saver/controller/playlistCtrl"
+	"playlist-saver/controller/playlistDetailCtrl"
 	"playlist-saver/controller/searchCtrl"
 	"playlist-saver/controller/userCtrl"
 	"playlist-saver/exceptions"
+	"playlist-saver/repository/repoplaylist"
+	"playlist-saver/repository/repoplaylistdetail"
 	"playlist-saver/repository/reposearch"
 	"playlist-saver/repository/repouser"
+	"playlist-saver/service/servplaylist"
+	"playlist-saver/service/servplaylistdetail"
 	"playlist-saver/service/servsearch"
 	"playlist-saver/service/servuser"
 	"strconv"
@@ -50,10 +56,20 @@ func main() {
 	searchService := servsearch.NewSearchService(searchRepo)
 	searchCtrl := searchCtrl.NewSearchController(searchService)
 
+	playlistRepo := repoplaylist.NewPlaylistRepository(mysqlClient)
+	playlistService := servplaylist.NewPlaylistService(playlistRepo)
+	plyCtrl := playlistCtrl.NewPlaylistController(playlistService)
+
+	detailRepo := repoplaylistdetail.NewPlaylistDetail(mysqlClient)
+	detailService := servplaylistdetail.NewPlaylistDetail(detailRepo,searchRepo)
+	detailCtrl := playlistDetailCtrl.NewPlaylistDetail(detailService)
+
 	routesInit := routes.ControllerList{
-		JWTMiddleware:    ConfigJWT.Init(),
-		UserController:   userCtrl,
-		SearchController: searchCtrl,
+		JWTMiddleware:      ConfigJWT.Init(),
+		UserController:     userCtrl,
+		SearchController:   searchCtrl,
+		PlaylistController: plyCtrl,
+		DetailController: detailCtrl,
 	}
 	routesInit.Registration(e)
 

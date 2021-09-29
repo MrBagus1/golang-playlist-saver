@@ -2,7 +2,7 @@ package userCtrl
 
 import (
 	"github.com/labstack/echo/v4"
-	"playlist-saver/exceptions"
+	"net/http"
 	"playlist-saver/model/web"
 	"playlist-saver/service/servuser"
 	"playlist-saver/utility"
@@ -21,10 +21,16 @@ func (uc *UserControllers) Register(c echo.Context) error {
 
 	req := web.UserRegisterRequest{}
 	err := c.Bind(&req)
-	exceptions.PanicIfError(err)
+	if err != nil{
+		return utility.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
 
 	srvDomain := req.ToDomainService()
-	data := uc.userService.Register(ctx, srvDomain)
+	data,err := uc.userService.Register(ctx, srvDomain)
+	if err != nil {
+		return utility.NewErrorResponse(c,http.StatusBadRequest,err)
+	}
+
 	res := web.UserRegisterResponse{}
 	res.FromDomainService(data)
 	return utility.NewSuccessResponse(c, res)
@@ -35,9 +41,14 @@ func (uc *UserControllers) Login(c echo.Context) error {
 
 	req := web.UserLoginRequest{}
 	err := c.Bind(&req)
-	exceptions.PanicIfError(err)
+	if err != nil{
+		return utility.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
 
-	data := uc.userService.Login(ctx, req.Email, req.Password)
+	data,err := uc.userService.Login(ctx, req.Email, req.Password)
+	if err !=nil {
+		return utility.NewErrorResponse(c,http.StatusBadRequest,err)
+	}
 
 	return utility.NewSuccessResponse(c, echo.Map{
 		"Token": data,
