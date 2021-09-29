@@ -1,10 +1,8 @@
 package record
 
-import "gorm.io/gorm"
-
 type YoutubeData struct {
-	gorm.Model
-	Id          string `gorm:"primary_key,not null"`
+	Id          int `gorm:"primary_key,not null"`
+	YoutubeLink string
 	Title       string
 	ChannelId   string
 	PublishedAt string

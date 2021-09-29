@@ -5,7 +5,6 @@ import (
 	"errors"
 	"log"
 	"playlist-saver/app/middleware"
-	"playlist-saver/exceptions"
 	"playlist-saver/repository/repouser"
 	"playlist-saver/utility"
 )
@@ -22,39 +21,46 @@ func NewUserService(UserRepository repouser.UserRepository, jwtAuth *middleware.
 	}
 }
 
-func (service *UserServiceImpl) Register(ctx context.Context, dataUser User) User {
+func (service *UserServiceImpl) Register(ctx context.Context, dataUser User) (User, error) {
 	err := dataUser.Validate()
-	exceptions.PanicIfError(err)
+	if err != nil {
+		return dataUser, err
+	}
 	password, err := utility.HashPassword(dataUser.Password)
-	exceptions.PanicIfError(err)
+	if err != nil{
+		return dataUser, err
+	}
+
 	dataUser.Password = password
 	dataUser.Status.Name = "FREE"
 
 	userRecord := dataUser.ToRecordUser()
 	log.Print("Test Recored", userRecord)
-	insertedUser := service.UserRepository.Register(ctx, userRecord)
-
+	insertedUser, err := service.UserRepository.Register(ctx, userRecord)
+	if err != nil {
+		return dataUser, err
+	}
 	dataUser.FromRecordUser(insertedUser)
 
-	return dataUser
+	return dataUser,nil
 }
 
-func (service *UserServiceImpl) Login(ctx context.Context, email, password string) string {
+func (service *UserServiceImpl) Login(ctx context.Context, email, password string) (string, error) {
 	if len(email) == 0 || len(password) == 0 {
-		panic(errors.New("email or password can't be blank"))
+		return "", errors.New("Dont't leave a blank form.")
 	}
 
-	userRecord := service.UserRepository.Login(ctx, email)
-	log.Print("Before hash", password)
-	log.Print("After hash", userRecord.Password)
+	userRecord, err := service.UserRepository.Login(ctx, email)
+	if err !=nil{
+		return "", err
+	}
 	match := utility.CheckPasswordHash(password, userRecord.Password)
-	log.Print("Booleana", match)
 
 	if !match {
-		panic(errors.New("email or password not match"))
+		return "", errors.New("Password doesn't match")
 	}
 
-	jwt := service.jwtAuth.GenerateToken(userRecord.Id, userRecord.Name, userRecord.Role)
+	jwt := service.jwtAuth.GenerateToken(userRecord.Id, userRecord.Name, userRecord.Role, userRecord.Status.Name)
 
-	return jwt
+	return jwt,nil
 }

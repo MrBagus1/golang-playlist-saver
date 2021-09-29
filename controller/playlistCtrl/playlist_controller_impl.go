@@ -2,6 +2,7 @@ package playlistCtrl
 
 import (
 	"github.com/labstack/echo/v4"
+	"net/http"
 	"playlist-saver/app/middleware"
 	"playlist-saver/exceptions"
 	"playlist-saver/model/web"
@@ -19,12 +20,16 @@ func NewPlaylistController(PlaylistService servplaylist.PlaylistService) Playlis
 
 func (pl *PlaylistControllerImpl) CreatePlaylist(c echo.Context) error {
 	ctx := c.Request().Context()
-	ctxUserValue := middleware.GetUserId(c)
+	ctxUserId := middleware.GetUserId(c)
+	ctxUserStatus := middleware.GetUserStatus(c)
 	req := web.PlaylistCreateRequest{}
 	err := c.Bind(&req)
 	exceptions.PanicIfError(err)
 
-	data := pl.PlaylistService.CreatePlaylist(ctx, req.Name, ctxUserValue)
+	data, err := pl.PlaylistService.CreatePlaylist(ctx, req.Name, ctxUserId, ctxUserStatus)
+	if err != nil {
+		return utility.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
 
 	response := web.PlaylistCreateResponse{
 		Name:      data.Name,

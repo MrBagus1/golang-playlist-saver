@@ -42,7 +42,7 @@ type YoutubeData struct {
 func (p *Playlist) FromRecordPlaylist(recordPlaylist record.Playlist) {
 	p.Id = recordPlaylist.Id
 	p.Name = recordPlaylist.Name
-	p.UserId = recordPlaylist.Id
+	p.UserId = recordPlaylist.UserId
 	p.CreatedAt = recordPlaylist.CreatedAt
 	p.UpdatedAt = recordPlaylist.UpdatedAt
 	p.DeletedAt = recordPlaylist.DeletedAt

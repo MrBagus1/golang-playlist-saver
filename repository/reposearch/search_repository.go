@@ -7,5 +7,6 @@ import (
 
 type SearchRepository interface {
 	GetByUrlId(ctx context.Context, Id string) record.YoutubeData
-	SearchYtByParam(ctx context.Context, Search string) []record.YoutubeData
+	SearchYtByParam(ctx context.Context, Search string) ([]record.YoutubeData, error)
+	SearchYtById(ctx context.Context, Id string) record.YoutubeData
 }
