@@ -12,15 +12,18 @@ import (
 	"playlist-saver/controller/playlistCtrl"
 	"playlist-saver/controller/playlistDetailCtrl"
 	"playlist-saver/controller/searchCtrl"
+	tokenCtrl2 "playlist-saver/controller/tokenCtrl"
 	"playlist-saver/controller/userCtrl"
 	"playlist-saver/exceptions"
 	"playlist-saver/repository/repoplaylist"
 	"playlist-saver/repository/repoplaylistdetail"
 	"playlist-saver/repository/reposearch"
+	"playlist-saver/repository/repotoken"
 	"playlist-saver/repository/repouser"
 	"playlist-saver/service/servplaylist"
 	"playlist-saver/service/servplaylistdetail"
 	"playlist-saver/service/servsearch"
+	"playlist-saver/service/servtoken"
 	"playlist-saver/service/servuser"
 	"strconv"
 
@@ -64,12 +67,17 @@ func main() {
 	detailService := servplaylistdetail.NewPlaylistDetail(detailRepo,searchRepo)
 	detailCtrl := playlistDetailCtrl.NewPlaylistDetail(detailService)
 
+	tokenRepo := repotoken.NewTokenRepository(mysqlClient)
+	TokenServ := servtoken.NewTokenService(tokenRepo)
+	tokenCtrl := tokenCtrl2.NewTokenController(TokenServ)
+
 	routesInit := routes.ControllerList{
 		JWTMiddleware:      ConfigJWT.Init(),
 		UserController:     userCtrl,
 		SearchController:   searchCtrl,
 		PlaylistController: plyCtrl,
 		DetailController: detailCtrl,
+		TokenController: tokenCtrl,
 	}
 	routesInit.Registration(e)
 
