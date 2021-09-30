@@ -47,3 +47,12 @@ func (pds *PlaylistDetailServiceImpl) AddYoutubeToPlaylist(ctx context.Context, 
 
 	return detail, nil
 }
+
+
+func (pdr *PlaylistDetailServiceImpl) DeleteYoutubeDataFromPlaylist(ctx context.Context, id int) error {
+	err := pdr.PlaylistDetailRepository.DeleteYoutubeDataFromPlaylist(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

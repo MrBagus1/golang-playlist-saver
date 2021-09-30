@@ -21,3 +21,12 @@ func (pdr *PlaylistDetailRepositoryImpl) AddYoutubeToPlaylist(ctx context.Contex
 	exceptions.PanicIfError(err)
 	return data
 }
+
+func (pdr *PlaylistDetailRepositoryImpl) DeleteYoutubeDataFromPlaylist(ctx context.Context, id int) error {
+	data := record.PlaylistDetail{}
+	pdr.client.Conn().Debug().WithContext(ctx).Where("Id", id).Delete(&data)
+
+	return nil
+}
+
+
