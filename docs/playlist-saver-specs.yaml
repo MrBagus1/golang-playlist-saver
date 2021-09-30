@@ -155,7 +155,7 @@ paths:
       tags:
         - Route to Get Something
       summary: "Get Playlist's Item by its ID"
-      description: "To get your Playlist's Items (songs,video etc) by the id OR you need to be added in someone Playlist to find another servuser's playlist"
+      description: "To get playlist by id"
       parameters:
         - name: playlist_id
           in: path
@@ -236,7 +236,7 @@ paths:
                       updated_at:
                         type: string
 
-  "/playlist/showall/{user_id}":
+  "/playlist/{user_id}":
     get:
       tags:
         - Route to Get Something
@@ -261,7 +261,7 @@ paths:
                   data:
                     $ref: "#/components/schemas/getPlaylist"
 
-  "/user/register":
+  "/users/register":
     post:
       tags:
         - Route to Post Something

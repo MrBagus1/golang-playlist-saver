@@ -1,7 +1,7 @@
 package servplaylist
 
 import (
-	"gopkg.in/guregu/null.v4"
+	"gorm.io/gorm"
 	"playlist-saver/model/record"
 	"time"
 )
@@ -12,24 +12,28 @@ type Playlist struct {
 	UserId         int
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
-	DeletedAt      null.Time
+	DeletedAt      gorm.DeletedAt
 	PlaylistDetail []PlaylistDetail
 }
 
 type PlaylistDetail struct {
 	Id            int
 	PlaylistId    int
-	YoutubeDataId int
+	YoutubeDataId string
 	YoutubeData   YoutubeData
 }
 
 type YoutubeData struct {
-	Id          string
+	Id          int
 	Title       string
 	ChannelId   string
 	PublishedAt string
 	Description string
 }
+
+//func (p *Playlist) ArrayPlaylist(detail []record.PlaylistDetail) []PlaylistDetail {
+//
+//}
 
 //
 //func (pl *Playlist) ToRecordPlaylist() record.User {
@@ -46,4 +50,16 @@ func (p *Playlist) FromRecordPlaylist(recordPlaylist record.Playlist) {
 	p.CreatedAt = recordPlaylist.CreatedAt
 	p.UpdatedAt = recordPlaylist.UpdatedAt
 	p.DeletedAt = recordPlaylist.DeletedAt
+}
+
+func (u *Playlist) ToRecordUser() record.Playlist {
+	recordPlaylist := record.Playlist{}
+	recordPlaylist.Id = u.Id
+	recordPlaylist.Name = u.Name
+	recordPlaylist.UserId = u.UserId
+	recordPlaylist.CreatedAt = u.CreatedAt
+	recordPlaylist.UpdatedAt = u.UpdatedAt
+	recordPlaylist.DeletedAt = u.DeletedAt
+
+	return recordPlaylist
 }

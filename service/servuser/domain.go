@@ -3,7 +3,6 @@ package servuser
 import (
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
-	"gopkg.in/guregu/null.v4"
 	"playlist-saver/model/record"
 	"time"
 )
@@ -28,7 +27,7 @@ type Status struct {
 	TokenId   string
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	ExpiredAt null.Time
+	ExpiredAt int
 }
 
 func (u *User) ToRecordUser() record.User {
