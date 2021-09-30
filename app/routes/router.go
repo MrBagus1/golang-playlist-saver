@@ -6,6 +6,7 @@ import (
 	"playlist-saver/controller/playlistCtrl"
 	"playlist-saver/controller/playlistDetailCtrl"
 	"playlist-saver/controller/searchCtrl"
+	"playlist-saver/controller/tokenCtrl"
 	"playlist-saver/controller/userCtrl"
 )
 
@@ -15,6 +16,7 @@ type ControllerList struct {
 	SearchController   searchCtrl.SearchController
 	PlaylistController playlistCtrl.PlaylistController
 	DetailController   playlistDetailCtrl.PlaylistDetailController
+	TokenController    tokenCtrl.TokenController
 }
 
 func (c1 *ControllerList) Registration(e *echo.Echo) {
@@ -39,6 +41,10 @@ func (c1 *ControllerList) Registration(e *echo.Echo) {
 
 	//ADD YOUTUBE TO PLAYLIST
 	apiV1.POST("/playlist/:playlistId/data", c1.DetailController.AddYoutubeToPlaylist, middleware.JWTWithConfig(c1.JWTMiddleware))
-	apiV1.DELETE("/playlists/:details/data", c1.DetailController.DeleteYoutubeDataFromPlaylist,middleware.JWTWithConfig(c1.JWTMiddleware))
+	apiV1.DELETE("/playlists/:details/data", c1.DetailController.DeleteYoutubeDataFromPlaylist, middleware.JWTWithConfig(c1.JWTMiddleware))
+
+	//ADMIN TOKEN
+	apiV1.POST("/admins/gacha/token", c1.TokenController.AddToken, middleware.JWTWithConfig(c1.JWTMiddleware))
+	apiV1.GET("/admins/gacha/token", c1.TokenController.GetToken, middleware.JWTWithConfig(c1.JWTMiddleware))
 
 }
