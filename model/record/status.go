@@ -1,7 +1,6 @@
 package record
 
 import (
-	"gopkg.in/guregu/null.v4"
 	"time"
 )
 
@@ -12,5 +11,5 @@ type Status struct {
 	TokenId   string
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	ExpiredAt null.Time
+	ExpiredAt int `gorm:"default:0"`
 }

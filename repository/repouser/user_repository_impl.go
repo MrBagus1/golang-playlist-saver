@@ -2,8 +2,8 @@ package repouser
 
 import (
 	"context"
+	"errors"
 	"playlist-saver/app/config/mysql"
-	"playlist-saver/exceptions"
 	"playlist-saver/model/record"
 )
 
@@ -18,25 +18,44 @@ func NewUserRepository(client mysql.Client) UserRepository {
 func (repository *userRepositoryImpl) Register(ctx context.Context, user record.User) (record.User, error) {
 	err := repository.client.Conn().Debug().WithContext(ctx).Create(&user).Error
 	if err != nil {
-		return user,err
+		return user, err
 	}
 
-	return user,nil
+	return user, nil
 }
 
 func (repository *userRepositoryImpl) Login(ctx context.Context, email string) (record.User, error) {
 	user := record.User{}
 	err := repository.client.Conn().Debug().WithContext(ctx).Preload("Status").Where("email = ? ", email).First(&user).Error
-	if err != nil{
+	if err != nil {
 		return user, err
 	}
-	return user,nil
+	return user, nil
 }
 
-func (repository *userRepositoryImpl) UserFindById(ctx context.Context, id int) record.User{
+func (repository *userRepositoryImpl) UserFindById(ctx context.Context, id int) (record.User, error) {
 	user := record.User{}
 	err := repository.client.Conn().Debug().WithContext(ctx).Where("id = ?", id).First(&user).Error
-	exceptions.PanicIfError(err)
+	if err !=nil {
+		return user, nil
+	}
 
-	return user
+	return user, nil
+}
+
+func (repository *userRepositoryImpl) GetAllUser(ctx context.Context) ([]record.User, error) {
+	var user []record.User
+	err := repository.client.Conn().Debug().WithContext(ctx).Preload("Status").Find(&user).Error
+	if err != nil {
+		return user, errors.New("Something Wrong!")
+	}
+	return user, nil
+}
+
+func (repository *userRepositoryImpl) UpdateUser(ctx context.Context, user record.User, id int) error {
+	err := repository.client.Conn().Debug().WithContext(ctx).Where("Id = ?", id).Updates(&user).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

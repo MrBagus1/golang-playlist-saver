@@ -1,7 +1,7 @@
 package record
 
 import (
-	"gopkg.in/guregu/null.v4"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -11,6 +11,6 @@ type Playlist struct {
 	UserId         int `gorm:"foreignKey: Id"`
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
-	DeletedAt      null.Time
-	PlaylistDetail []PlaylistDetail `gorm:"foreignKey: PlaylistId"`
+	DeletedAt      gorm.DeletedAt
+	PlaylistDetail []PlaylistDetail `gorm:"foreignKey: PlaylistId;constraint:OnDelete:CASCADE"`
 }

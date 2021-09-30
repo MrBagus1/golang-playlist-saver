@@ -26,14 +26,14 @@ func (pl *PlaylistDetailControllerImpl) AddYoutubeToPlaylist(c echo.Context) err
 	req := web.DetailCreateRequest{}
 	err := c.Bind(&req)
 	if err != nil {
-		return utility.NewErrorResponse(c,http.StatusBadRequest,errors.New("Something wrong with your request"))
+		return utility.NewErrorResponse(c,http.StatusBadRequest,errors.New("something wrong with your request"))
 	}
 	//serv domain
 	log.Println("REQUEST PARAMS", requestParams)
 	atoi, err := strconv.Atoi(requestParams)
 	log.Print("ATOI, " , atoi)
 	if err != nil {
-		return utility.NewErrorResponse(c, http.StatusBadRequest,errors.New("Error with your request params"))
+		return utility.NewErrorResponse(c, http.StatusBadRequest,errors.New("error with your request params"))
 	}
 
 	servReq := servplaylistdetail.PlaylistDetail{
@@ -50,3 +50,17 @@ func (pl *PlaylistDetailControllerImpl) AddYoutubeToPlaylist(c echo.Context) err
 	return utility.NewSuccessResponse(c, response)
 }
 
+func (pl *PlaylistDetailControllerImpl) DeleteYoutubeDataFromPlaylist(c echo.Context) error {
+	ctx := c.Request().Context()
+	id := c.Param("details")
+	atoi, err := strconv.Atoi(id)
+	if err != nil {
+		return utility.NewErrorResponse(c,http.StatusBadRequest,err)
+	}
+	err = pl.PlaylistDetail.DeleteYoutubeDataFromPlaylist(ctx, atoi)
+	if err != nil {
+		return utility.NewErrorResponse(c, http.StatusInternalServerError,err)
+
+	}
+	return utility.NewSuccessResponse(c,"Success Delete Youtube Data" )
+}
