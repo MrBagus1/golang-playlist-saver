@@ -36,7 +36,6 @@ func (service *UserServiceImpl) Register(ctx context.Context, dataUser User) (Us
 	if dataUser.Email == "bjanardana@google.com"{
 		dataUser.Role = "ADMIN"
 	}
-
 	dataUser.Password = password
 	dataUser.Status.Name = "FREE"
 

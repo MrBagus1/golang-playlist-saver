@@ -70,7 +70,7 @@ func (repository *userRepositoryImpl) UserAddToken(ctx context.Context, id int, 
 	}
 	log.Println("test id", id)
 	// add expired day
-	expired := time.Now().Add(720*time.Hour)
+	expired := time.Now().Add(5*time.Minute)
 	err = user.ExpiredAt.Scan(expired)
 	if err != nil {
 		return err
