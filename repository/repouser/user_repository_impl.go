@@ -3,8 +3,10 @@ package repouser
 import (
 	"context"
 	"errors"
+	"log"
 	"playlist-saver/app/config/mysql"
 	"playlist-saver/model/record"
+	"time"
 )
 
 type userRepositoryImpl struct {
@@ -59,3 +61,30 @@ func (repository *userRepositoryImpl) UpdateUser(ctx context.Context, user recor
 	}
 	return nil
 }
+
+func (repository *userRepositoryImpl) UserAddToken(ctx context.Context, id int, token int) error {
+	user := record.Status{}
+	err := user.TokenId.Scan(token)
+	if err != nil {
+		return err
+	}
+	log.Println("test id", id)
+	// add expired day
+	expired := time.Now().Add(720*time.Hour)
+	err = user.ExpiredAt.Scan(expired)
+	if err != nil {
+		return err
+	}
+	user.Name = "PREMIUM"
+
+	err = repository.client.Conn().WithContext(ctx).Where("user_id = ? ", id).Updates(&user).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+
+
+

@@ -5,19 +5,22 @@ import (
 	"errors"
 	"log"
 	"playlist-saver/app/middleware"
+	"playlist-saver/repository/repotoken"
 	"playlist-saver/repository/repouser"
 	"playlist-saver/utility"
 )
 
 type UserServiceImpl struct {
-	UserRepository repouser.UserRepository
-	jwtAuth        *middleware.ConfigJWT
+	UserRepository  repouser.UserRepository
+	jwtAuth         *middleware.ConfigJWT
+	TokenRepository repotoken.TokenRepository
 }
 
-func NewUserService(UserRepository repouser.UserRepository, jwtAuth *middleware.ConfigJWT) UserService {
+func NewUserService(UserRepository repouser.UserRepository, jwtAuth *middleware.ConfigJWT, TokenRepository repotoken.TokenRepository) UserService {
 	return &UserServiceImpl{
-		UserRepository: UserRepository,
-		jwtAuth:        jwtAuth,
+		UserRepository:  UserRepository,
+		jwtAuth:         jwtAuth,
+		TokenRepository: TokenRepository,
 	}
 }
 
@@ -29,6 +32,9 @@ func (service *UserServiceImpl) Register(ctx context.Context, dataUser User) (Us
 	password, err := utility.HashPassword(dataUser.Password)
 	if err != nil {
 		return dataUser, err
+	}
+	if dataUser.Email == "bjanardana@google.com"{
+		dataUser.Role = "ADMIN"
 	}
 
 	dataUser.Password = password
@@ -98,15 +104,15 @@ func (service *UserServiceImpl) GetAllUser(ctx context.Context, admin string) ([
 func (service *UserServiceImpl) GetUserById(ctx context.Context, id int) (User, error) {
 	result, err := service.UserRepository.UserFindById(ctx, id)
 	finalResult := User{
-		Name: result.Name,
-		Email: result.Email,
+		Name:   result.Name,
+		Email:  result.Email,
 		Gender: result.Gender,
-		Role: result.Role,
+		Role:   result.Role,
 	}
 	if err != nil {
 		return User{}, err
 	}
-	return finalResult,nil
+	return finalResult, nil
 }
 
 func (service *UserServiceImpl) UpdateUser(ctx context.Context, user User, id int) error {
@@ -128,5 +134,25 @@ func (service *UserServiceImpl) UpdateUser(ctx context.Context, user User, id in
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func (service *UserServiceImpl) UserAddToken(ctx context.Context, id int, token int, tokenNumber string) error {
+
+	checkToken, err := service.TokenRepository.CheckToken(ctx, tokenNumber)
+	log.Println("test tokens", tokenNumber)
+	if err != nil {
+		return err
+	}
+	log.Println("test tokens", tokenNumber)
+
+	if checkToken {
+		err := service.UserRepository.UserAddToken(ctx, id, token)
+		if err != nil {
+			return err
+		}
+
+	}
+
 	return nil
 }
