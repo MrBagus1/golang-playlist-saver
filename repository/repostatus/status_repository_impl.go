@@ -2,9 +2,11 @@ package repostatus
 
 import (
 	"context"
+	"gopkg.in/guregu/null.v4"
 	"playlist-saver/app/config/mysql"
 	"playlist-saver/exceptions"
 	"playlist-saver/model/record"
+	"time"
 )
 
 type StatusRepositoryImpl struct {
@@ -33,4 +35,24 @@ func (st *StatusRepositoryImpl) GetAllStatus(ctx context.Context) ([]record.Stat
 	}
 
 	return status, nil
+}
+
+func (st *StatusRepositoryImpl) GetPremiumStatus(ctx context.Context) ([]record.Status, error) {
+	var status []record.Status
+
+	err := st.client.Conn().Debug().WithContext(ctx).Where("name = ? AND expired_at < ?", "PREMIUM", time.Now()).Find(&status)
+	if err != nil {
+		return status, nil
+	}
+	return status, nil
+}
+
+func (st *StatusRepositoryImpl) UpdateStatus(ctx context.Context, userId int) error {
+	status := record.Status{}
+	err := st.client.Conn().Debug().WithContext(ctx).Model(&status).Where("user_id = ?", userId).Updates(map[string]interface{}{"name": "FREE", "token_id": null.Int{}, "expired_at": null.Time{}}).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

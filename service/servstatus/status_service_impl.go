@@ -36,3 +36,22 @@ func (ssi *StatusServiceImpl) GetAllStatus(ctx context.Context) ([]Status, error
 
 	return statusRecord,nil
 }
+
+func (ssi *StatusServiceImpl) CronPremiumChecker(ctx context.Context) error {
+
+	//statusData := make([]Status,0)
+	status, err := ssi.StatusRepository.GetPremiumStatus(ctx)
+	if err != nil {
+		return err
+	}
+
+	for _,values := range status{
+		err := ssi.StatusRepository.UpdateStatus(ctx, values.UserId)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+

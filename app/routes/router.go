@@ -6,6 +6,7 @@ import (
 	"playlist-saver/controller/playlistCtrl"
 	"playlist-saver/controller/playlistDetailCtrl"
 	"playlist-saver/controller/searchCtrl"
+	"playlist-saver/controller/statusCtrl"
 	"playlist-saver/controller/tokenCtrl"
 	"playlist-saver/controller/userCtrl"
 )
@@ -17,6 +18,7 @@ type ControllerList struct {
 	PlaylistController playlistCtrl.PlaylistController
 	DetailController   playlistDetailCtrl.PlaylistDetailController
 	TokenController    tokenCtrl.TokenController
+	StatusController   statusCtrl.StatusController
 }
 
 func (c1 *ControllerList) Registration(e *echo.Echo) {
@@ -47,5 +49,8 @@ func (c1 *ControllerList) Registration(e *echo.Echo) {
 	//ADMIN TOKEN
 	apiV1.POST("/admins/gacha/token", c1.TokenController.AddToken, middleware.JWTWithConfig(c1.JWTMiddleware))
 	apiV1.GET("/admins/gacha/token", c1.TokenController.GetToken, middleware.JWTWithConfig(c1.JWTMiddleware))
+
+	//cron check
+	apiV1.PUT("/checks/cron", c1.StatusController.CronCheckToken)
 
 }
