@@ -7,4 +7,5 @@ type UserController interface {
 	Login(c echo.Context) error
 	GetAllUser(c echo.Context) error
 	UpdateUser(c echo.Context) error
+	AddTokenUser(c echo.Context) error
 }

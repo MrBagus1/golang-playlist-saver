@@ -51,9 +51,6 @@ func main() {
 		SecretJWT: os.Getenv("JWT_SECRET"),
 		ExpiredIn: EXPIRED,
 	}
-	userRepo := repouser.NewUserRepository(mysqlClient)
-	userService := servuser.NewUserService(userRepo, &ConfigJWT)
-	userCtrl := userCtrl.NewUserController(userService)
 
 	searchRepo := reposearch.NewSearchRepository(mysqlClient)
 	searchService := servsearch.NewSearchService(searchRepo)
@@ -64,20 +61,24 @@ func main() {
 	plyCtrl := playlistCtrl.NewPlaylistController(playlistService)
 
 	detailRepo := repoplaylistdetail.NewPlaylistDetail(mysqlClient)
-	detailService := servplaylistdetail.NewPlaylistDetail(detailRepo,searchRepo)
+	detailService := servplaylistdetail.NewPlaylistDetail(detailRepo, searchRepo)
 	detailCtrl := playlistDetailCtrl.NewPlaylistDetail(detailService)
 
 	tokenRepo := repotoken.NewTokenRepository(mysqlClient)
 	TokenServ := servtoken.NewTokenService(tokenRepo)
 	tokenCtrl := tokenCtrl2.NewTokenController(TokenServ)
 
+	userRepo := repouser.NewUserRepository(mysqlClient)
+	userService := servuser.NewUserService(userRepo, &ConfigJWT, tokenRepo)
+	userCtrl := userCtrl.NewUserController(userService)
+
 	routesInit := routes.ControllerList{
 		JWTMiddleware:      ConfigJWT.Init(),
 		UserController:     userCtrl,
 		SearchController:   searchCtrl,
 		PlaylistController: plyCtrl,
-		DetailController: detailCtrl,
-		TokenController: tokenCtrl,
+		DetailController:   detailCtrl,
+		TokenController:    tokenCtrl,
 	}
 	routesInit.Registration(e)
 

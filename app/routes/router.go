@@ -28,6 +28,7 @@ func (c1 *ControllerList) Registration(e *echo.Echo) {
 	apiV1.POST("/users/login", c1.UserController.Login)
 	apiV1.GET("/users", c1.UserController.GetAllUser, middleware.JWTWithConfig(c1.JWTMiddleware))
 	apiV1.PUT("/users", c1.UserController.UpdateUser, middleware.JWTWithConfig(c1.JWTMiddleware))
+	apiV1.PUT("/users/token", c1.UserController.AddTokenUser, middleware.JWTWithConfig(c1.JWTMiddleware))
 
 	//	SEARCH
 	apiV1.GET("/search", c1.SearchController.SearchYtByParam, middleware.JWTWithConfig(c1.JWTMiddleware))
