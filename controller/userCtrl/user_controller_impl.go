@@ -1,16 +1,19 @@
 package userCtrl
 
 import (
+	"errors"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"playlist-saver/app/middleware"
 	"playlist-saver/model/web"
+	"playlist-saver/service/servstatus"
 	"playlist-saver/service/servuser"
 	"playlist-saver/utility"
 )
 
 type UserControllers struct {
 	userService servuser.UserService
+	statusService servstatus.StatusService
 }
 
 func NewUserController(userService servuser.UserService) UserController {
@@ -113,3 +116,36 @@ func (uc *UserControllers) UpdateUser(c echo.Context) error {
 	}
 	return utility.NewSuccessResponse(c,final)
 }
+
+func (uc *UserControllers) AddTokenUser(c echo.Context) error {
+	ctx := c.Request().Context()
+	id := middleware.GetUserId(c)
+
+	req := web.TokenAddRequest{}
+	if err := c.Bind(&req); err != nil {
+		return utility.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	//check status
+	user, err := uc.userService.GetAllUser(ctx , "ADMIN")
+	if err != nil {
+		return err
+	}
+	for _ , values := range user {
+		if values.Status.TokenId == req.Id {
+			return utility.NewErrorResponse(c,http.StatusBadRequest,errors.New("token already in used!"))
+		}
+	}
+
+
+	err = uc.userService.UserAddToken(ctx,id, req.Id, req.TokenId)
+	if err != nil {
+		return err
+
+	}
+
+	return utility.NewSuccessResponse(c,"you're premium now!")
+}
+
+
+

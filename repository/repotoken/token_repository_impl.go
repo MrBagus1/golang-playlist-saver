@@ -37,3 +37,21 @@ func (tri *TokenRepositoryImpl) GetToken(ctx context.Context) ([]record.Token, e
 
 	return token, nil
 }
+
+func (tri *TokenRepositoryImpl) CheckToken(ctx context.Context, token string) (bool, error) {
+	//	simple docs
+	//* checking token valid or not.
+	//****
+
+	tokens := record.Token{}
+
+	err := tri.client.Conn().Debug().WithContext(ctx).Where("tokens_id = ?", token).First(&tokens).Error
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
+
+
