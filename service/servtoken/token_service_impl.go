@@ -2,7 +2,6 @@ package servtoken
 
 import (
 	"context"
-	"log"
 	"playlist-saver/model/record"
 	"playlist-saver/repository/repotoken"
 	"playlist-saver/utility"
@@ -27,7 +26,6 @@ func (tsi *TokenServiceImpl) AddToken(ctx context.Context) error {
 	token := Token{}
 	for i:=0; i<5; i++{
 		tokens := utility.GenerateSecureToken(26)
-		log.Println("test token", tokens)
 		response := record.Token{
 			TokensId: tokens,
 			CreatedAt: token.CreatedAt,
@@ -52,7 +50,7 @@ func (tsi *TokenServiceImpl) GetToken(ctx context.Context) ([]Token, error) {
 
 	TokenResult, err := tsi.TokenRepository.GetToken(ctx)
 	if err != nil {
-		return dataFinal, nil
+		return dataFinal, err
 	}
 
 	for _ , values := range TokenResult{

@@ -2,8 +2,6 @@ package repouser
 
 import (
 	"context"
-	"errors"
-	"log"
 	"playlist-saver/app/config/mysql"
 	"playlist-saver/model/record"
 	"time"
@@ -49,7 +47,7 @@ func (repository *userRepositoryImpl) GetAllUser(ctx context.Context) ([]record.
 	var user []record.User
 	err := repository.client.Conn().Debug().WithContext(ctx).Preload("Status").Find(&user).Error
 	if err != nil {
-		return user, errors.New("Something Wrong!")
+		return user, err
 	}
 	return user, nil
 }
@@ -68,7 +66,7 @@ func (repository *userRepositoryImpl) UserAddToken(ctx context.Context, id int, 
 	if err != nil {
 		return err
 	}
-	log.Println("test id", id)
+
 	// add expired day
 	expired := time.Now().Add(5*time.Minute)
 	err = user.ExpiredAt.Scan(expired)

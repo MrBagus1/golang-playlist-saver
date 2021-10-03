@@ -33,16 +33,9 @@ func (pds *PlaylistDetailServiceImpl) AddYoutubeToPlaylist(ctx context.Context, 
 			Description: search.Description,
 		},
 	}
-	//log.Println("Testing save youtube", youtube)
-	//detail.YoutubeData.YoutubeId = youtube
-	//detail.YoutubeData.Title =
-	//detail.YoutubeData.ChannelId =
-	//detail.YoutubeData.PublishedAt =
-	//detail.YoutubeData.Description =
 
 	addDetail := detailNew.ToRecordPlaylistDetail()
 	resultPlaylist := pds.PlaylistDetailRepository.AddYoutubeToPlaylist(ctx, addDetail)
-	//youtubeAdd :=
 	detail.FromRecordPlaylistDetail(resultPlaylist)
 
 	return detail, nil

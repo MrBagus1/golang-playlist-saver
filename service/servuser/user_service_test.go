@@ -6,7 +6,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"log"
-	"os"
 	"playlist-saver/app/middleware"
 	"playlist-saver/model/record"
 	tokenMock "playlist-saver/repository/repotoken/mocks"
@@ -36,10 +35,6 @@ func setup() UserService {
 
 //Register(ctx context.Context, dataUser User) (User, error)
 
-func TestMain(m *testing.M) {
-	setup()
-	os.Exit(m.Run())
-}
 
 func TestRegister(t *testing.T) {
 	userService := setup()
@@ -209,6 +204,7 @@ func TestGetAllUser(t *testing.T) {
 		assert.Equal(t, err, errorRepositoryNotAdmin)
 		//assert.Nil(t, err)
 	})
+
 }
 
 func TestGetUserById(t *testing.T) {

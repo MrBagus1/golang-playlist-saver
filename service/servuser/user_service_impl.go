@@ -3,7 +3,6 @@ package servuser
 import (
 	"context"
 	"errors"
-	"log"
 	"playlist-saver/app/middleware"
 	"playlist-saver/repository/repotoken"
 	"playlist-saver/repository/repouser"
@@ -40,7 +39,6 @@ func (service *UserServiceImpl) Register(ctx context.Context, dataUser User) (Us
 	dataUser.Status.Name = "FREE"
 
 	userRecord := dataUser.ToRecordUser()
-	log.Print("Test Recored", userRecord)
 	insertedUser, err := service.UserRepository.Register(ctx, userRecord)
 	if err != nil {
 		return dataUser, err
@@ -71,7 +69,6 @@ func (service *UserServiceImpl) Login(ctx context.Context, email, password strin
 }
 
 func (service *UserServiceImpl) GetAllUser(ctx context.Context, admin string) ([]User, error) {
-	log.Println("Test admin", admin)
 
 	if admin != "ADMIN" {
 		return nil, errors.New("you're not admin, can't fetch all data")
@@ -80,7 +77,7 @@ func (service *UserServiceImpl) GetAllUser(ctx context.Context, admin string) ([
 	dataFinal := make([]User, 0)
 	UserResult, err := service.UserRepository.GetAllUser(ctx)
 	if err != nil {
-		return nil, errors.New("not Found")
+		return dataFinal, err
 	}
 	for _, values := range UserResult {
 		dataUser := User{}
@@ -139,11 +136,9 @@ func (service *UserServiceImpl) UpdateUser(ctx context.Context, user User, id in
 func (service *UserServiceImpl) UserAddToken(ctx context.Context, id int, token int, tokenNumber string) error {
 
 	checkToken, err := service.TokenRepository.CheckToken(ctx, tokenNumber)
-	log.Println("test tokens", tokenNumber)
 	if err != nil {
 		return err
 	}
-	log.Println("test tokens", tokenNumber)
 
 	if checkToken {
 		err := service.UserRepository.UserAddToken(ctx, id, token)

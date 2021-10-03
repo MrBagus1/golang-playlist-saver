@@ -40,9 +40,9 @@ func (st *StatusRepositoryImpl) GetAllStatus(ctx context.Context) ([]record.Stat
 func (st *StatusRepositoryImpl) GetPremiumStatus(ctx context.Context) ([]record.Status, error) {
 	var status []record.Status
 
-	err := st.client.Conn().Debug().WithContext(ctx).Where("name = ? AND expired_at < ?", "PREMIUM", time.Now()).Find(&status)
+	err := st.client.Conn().Debug().WithContext(ctx).Where("name = ? AND expired_at < ?", "PREMIUM", time.Now()).Find(&status).Error
 	if err != nil {
-		return status, nil
+		return status, err
 	}
 	return status, nil
 }

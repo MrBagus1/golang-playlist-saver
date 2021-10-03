@@ -32,7 +32,7 @@ func (tri *TokenRepositoryImpl) GetToken(ctx context.Context) ([]record.Token, e
 	var token []record.Token
 	err := tri.client.Conn().Debug().WithContext(ctx).Find(&token).Error
 	if err != nil {
-		return token, nil
+		return token, err
 	}
 
 	return token, nil
