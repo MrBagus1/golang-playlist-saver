@@ -15,9 +15,6 @@ func NewStatusService(StatusRepository repostatus.StatusRepository) StatusServic
 	}
 }
 
-func (ssi *StatusServiceImpl) GetStatusByUserId(ctx context.Context) Status {
-	return Status{}
-}
 
 func (ssi *StatusServiceImpl) GetAllStatus(ctx context.Context) ([]Status, error) {
 	statusRecord := make([]Status, 0)

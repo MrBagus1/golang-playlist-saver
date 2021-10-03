@@ -3,7 +3,6 @@ package servplaylist
 import (
 	"context"
 	"errors"
-	"log"
 	"playlist-saver/repository/repoplaylist"
 	"strconv"
 )
@@ -72,7 +71,6 @@ func (pl *PlaylistServiceImpl) GetAllPlaylist(ctx context.Context) ([]Playlist, 
 		dataSemi.CreatedAt = values.CreatedAt
 		dataSemi.UpdatedAt = values.UpdatedAt
 		dataSemi.DeletedAt = values.DeletedAt
-		//dataFinalPlaylistDetail := make([]PlaylistDetail,0)
 		for _, values2 := range values.PlaylistDetail {
 			dataSemi2 := PlaylistDetail{}
 			dataSemi2.Id = values2.Id
@@ -83,14 +81,10 @@ func (pl *PlaylistServiceImpl) GetAllPlaylist(ctx context.Context) ([]Playlist, 
 			dataSemi2.YoutubeData.ChannelId = values2.YoutubeData.ChannelId
 			dataSemi2.YoutubeData.PublishedAt = values2.YoutubeData.PublishedAt
 			dataSemi2.YoutubeData.Description = values2.YoutubeData.Description
-			log.Println("testest values2", values2.YoutubeData.Title)
-			//dataFinalPlaylistDetail = append(dataFinalPlaylistDetail,dataSemi2)
 			dataSemi.PlaylistDetail = append(dataSemi.PlaylistDetail, dataSemi2)
 		}
 		dataFinalPlaylist = append(dataFinalPlaylist, dataSemi)
-		log.Println("Data semi", dataSemi)
 	}
-	log.Println("dataFinalService,", dataFinalPlaylist)
 
 	return dataFinalPlaylist, nil
 }
@@ -110,7 +104,6 @@ func (pl *PlaylistServiceImpl) GetPlaylistByUserId(ctx context.Context, id int) 
 		dataSemi.CreatedAt = values.CreatedAt
 		dataSemi.UpdatedAt = values.UpdatedAt
 		dataSemi.DeletedAt = values.DeletedAt
-		//dataFinalPlaylistDetail := make([]PlaylistDetail,0)
 		for _, values2 := range values.PlaylistDetail {
 			dataSemi2 := PlaylistDetail{}
 			dataSemi2.Id = values2.Id
@@ -121,14 +114,10 @@ func (pl *PlaylistServiceImpl) GetPlaylistByUserId(ctx context.Context, id int) 
 			dataSemi2.YoutubeData.ChannelId = values2.YoutubeData.ChannelId
 			dataSemi2.YoutubeData.PublishedAt = values2.YoutubeData.PublishedAt
 			dataSemi2.YoutubeData.Description = values2.YoutubeData.Description
-			log.Println("testest values2", values2.YoutubeData.Title)
-			//dataFinalPlaylistDetail = append(dataFinalPlaylistDetail,dataSemi2)
 			dataSemi.PlaylistDetail = append(dataSemi.PlaylistDetail, dataSemi2)
 		}
 		dataFinalPlaylist = append(dataFinalPlaylist, dataSemi)
-		log.Println("Data semi", dataSemi)
 	}
-	log.Println("dataFinalService,", dataFinalPlaylist)
 
 	return dataFinalPlaylist, nil
 }
