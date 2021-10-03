@@ -1,0 +1,861 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>servplaylist: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">playlist-saver/service/servplaylist/domain.go (100.0%)</option>
+				
+				<option value="file1">playlist-saver/service/servplaylist/playlist_service_impl.go (98.8%)</option>
+				
+				<option value="file2">playlist-saver/service/servplaylistdetail/domain.go (100.0%)</option>
+				
+				<option value="file3">playlist-saver/service/servplaylistdetail/playlistdetail_service_impl.go (100.0%)</option>
+				
+				<option value="file4">playlist-saver/service/servsearch/domain.go (100.0%)</option>
+				
+				<option value="file5">playlist-saver/service/servsearch/search_service_impl.go (95.7%)</option>
+				
+				<option value="file6">playlist-saver/service/servstatus/status_service_impl.go (100.0%)</option>
+				
+				<option value="file7">playlist-saver/service/servtoken/token_service_impl.go (100.0%)</option>
+				
+				<option value="file8">playlist-saver/service/servuser/domain.go (100.0%)</option>
+				
+				<option value="file9">playlist-saver/service/servuser/user_service_impl.go (86.7%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package servplaylist
+
+import (
+        "gorm.io/gorm"
+        "playlist-saver/model/record"
+        "time"
+)
+
+type Playlist struct {
+        Id             int
+        Name           string
+        UserId         int
+        CreatedAt      time.Time
+        UpdatedAt      time.Time
+        DeletedAt      gorm.DeletedAt
+        PlaylistDetail []PlaylistDetail
+}
+
+type PlaylistDetail struct {
+        Id            int
+        PlaylistId    int
+        YoutubeDataId string
+        YoutubeData   YoutubeData
+}
+
+type YoutubeData struct {
+        Id          int
+        Title       string
+        ChannelId   string
+        PublishedAt string
+        Description string
+}
+
+//func (p *Playlist) ArrayPlaylist(detail []record.PlaylistDetail) []PlaylistDetail {
+//
+//}
+
+//
+//func (pl *Playlist) ToRecordPlaylist() record.User {
+//        recordPlaylist := record.Playlist{}
+//        recordPlaylist.Name = u.Name
+//
+//        return recordUser
+//}
+
+func (p *Playlist) FromRecordPlaylist(recordPlaylist record.Playlist) <span class="cov8" title="1">{
+        p.Id = recordPlaylist.Id
+        p.Name = recordPlaylist.Name
+        p.UserId = recordPlaylist.UserId
+        p.CreatedAt = recordPlaylist.CreatedAt
+        p.UpdatedAt = recordPlaylist.UpdatedAt
+        p.DeletedAt = recordPlaylist.DeletedAt
+}</span>
+
+func (u *Playlist) ToRecordUser() record.Playlist <span class="cov8" title="1">{
+        recordPlaylist := record.Playlist{}
+        recordPlaylist.Id = u.Id
+        recordPlaylist.Name = u.Name
+        recordPlaylist.UserId = u.UserId
+        recordPlaylist.CreatedAt = u.CreatedAt
+        recordPlaylist.UpdatedAt = u.UpdatedAt
+        recordPlaylist.DeletedAt = u.DeletedAt
+
+        return recordPlaylist
+}</span>
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package servplaylist
+
+import (
+        "context"
+        "errors"
+        "playlist-saver/repository/repoplaylist"
+        "strconv"
+)
+
+type PlaylistServiceImpl struct {
+        PlaylistRepository repoplaylist.PlaylistRepository
+}
+
+func NewPlaylistService(PlaylistRepository repoplaylist.PlaylistRepository) PlaylistService <span class="cov8" title="1">{
+        return &amp;PlaylistServiceImpl{
+                PlaylistRepository: PlaylistRepository,
+        }
+}</span>
+
+func (pl *PlaylistServiceImpl) CreatePlaylist(ctx context.Context, name string, id int, status string) (Playlist, error) <span class="cov8" title="1">{
+        dataPlaylist := Playlist{}
+
+        if len(name) == 0 || len(strconv.Itoa(id)) == 0 </span><span class="cov8" title="1">{
+                return dataPlaylist, errors.New("Don't leave name blank")
+        }</span>
+
+        <span class="cov8" title="1">if status == "FREE" </span><span class="cov8" title="1">{
+                listPlaylist, err := pl.PlaylistRepository.GetPlaylistByUserId(ctx, id)
+                if err != nil </span><span class="cov8" title="1">{
+                        return dataPlaylist, err
+                }</span>
+                <span class="cov8" title="1">if len(listPlaylist) &gt; 10 </span><span class="cov8" title="1">{
+                        return dataPlaylist, errors.New("You're free user, max can't add 10 playlist")
+                }</span> else<span class="cov8" title="1"> {
+                        CreatedPlaylist, err := pl.PlaylistRepository.CreatePlaylist(ctx, name, id)
+                        if err != nil </span><span class="cov8" title="1">{
+                                return dataPlaylist, err
+                        }</span>
+                        <span class="cov8" title="1">dataPlaylist.FromRecordPlaylist(CreatedPlaylist)
+                        return dataPlaylist, nil</span>
+                }
+        }
+
+        <span class="cov8" title="1">if status == "PREMIUM" </span><span class="cov8" title="1">{
+                CreatedPlaylist, err := pl.PlaylistRepository.CreatePlaylist(ctx, name, id)
+                if err != nil </span><span class="cov8" title="1">{
+                        return dataPlaylist, err
+                }</span>
+                <span class="cov8" title="1">dataPlaylist.FromRecordPlaylist(CreatedPlaylist)
+                return dataPlaylist, nil</span>
+        }
+        //simple docs, get data by user id, find the status free / premium
+        // if free , find playlistbyId, if array &lt;=10, then you can assign new playlkist
+        // else return new errors, you are free user, can't add more thatn 10 playlist
+        //if user status is PREMIUM, then they can add more thatn 10 playlist
+        <span class="cov0" title="0">return dataPlaylist, errors.New("Something wrong with server")</span>
+}
+
+func (pl *PlaylistServiceImpl) GetAllPlaylist(ctx context.Context) ([]Playlist, error) <span class="cov8" title="1">{
+
+        dataFinalPlaylist := make([]Playlist, 0)
+        dataResult, err := pl.PlaylistRepository.GetAllPlaylist(ctx)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">for _, values := range dataResult </span><span class="cov8" title="1">{
+                dataSemi := Playlist{}
+                dataSemi.Id = values.Id
+                dataSemi.Name = values.Name
+                dataSemi.UserId = values.UserId
+                dataSemi.CreatedAt = values.CreatedAt
+                dataSemi.UpdatedAt = values.UpdatedAt
+                dataSemi.DeletedAt = values.DeletedAt
+                for _, values2 := range values.PlaylistDetail </span><span class="cov8" title="1">{
+                        dataSemi2 := PlaylistDetail{}
+                        dataSemi2.Id = values2.Id
+                        dataSemi2.PlaylistId = values2.PlaylistId
+                        dataSemi2.YoutubeDataId = values2.YoutubeDataId
+                        dataSemi2.YoutubeData.Id = values2.YoutubeData.Id
+                        dataSemi2.YoutubeData.Title = values2.YoutubeData.Title
+                        dataSemi2.YoutubeData.ChannelId = values2.YoutubeData.ChannelId
+                        dataSemi2.YoutubeData.PublishedAt = values2.YoutubeData.PublishedAt
+                        dataSemi2.YoutubeData.Description = values2.YoutubeData.Description
+                        dataSemi.PlaylistDetail = append(dataSemi.PlaylistDetail, dataSemi2)
+                }</span>
+                <span class="cov8" title="1">dataFinalPlaylist = append(dataFinalPlaylist, dataSemi)</span>
+        }
+
+        <span class="cov8" title="1">return dataFinalPlaylist, nil</span>
+}
+
+func (pl *PlaylistServiceImpl) GetPlaylistByUserId(ctx context.Context, id int) ([]Playlist, error) <span class="cov8" title="1">{
+        dataFinalPlaylist := make([]Playlist, 0)
+        dataResult, err := pl.PlaylistRepository.GetPlaylistByUserId(ctx, id)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">for _, values := range dataResult </span><span class="cov8" title="1">{
+                dataSemi := Playlist{}
+                dataSemi.Id = values.Id
+                dataSemi.Name = values.Name
+                dataSemi.UserId = values.UserId
+                dataSemi.CreatedAt = values.CreatedAt
+                dataSemi.UpdatedAt = values.UpdatedAt
+                dataSemi.DeletedAt = values.DeletedAt
+                for _, values2 := range values.PlaylistDetail </span><span class="cov8" title="1">{
+                        dataSemi2 := PlaylistDetail{}
+                        dataSemi2.Id = values2.Id
+                        dataSemi2.PlaylistId = values2.PlaylistId
+                        dataSemi2.YoutubeDataId = values2.YoutubeDataId
+                        dataSemi2.YoutubeData.Id = values2.YoutubeData.Id
+                        dataSemi2.YoutubeData.Title = values2.YoutubeData.Title
+                        dataSemi2.YoutubeData.ChannelId = values2.YoutubeData.ChannelId
+                        dataSemi2.YoutubeData.PublishedAt = values2.YoutubeData.PublishedAt
+                        dataSemi2.YoutubeData.Description = values2.YoutubeData.Description
+                        dataSemi.PlaylistDetail = append(dataSemi.PlaylistDetail, dataSemi2)
+                }</span>
+                <span class="cov8" title="1">dataFinalPlaylist = append(dataFinalPlaylist, dataSemi)</span>
+        }
+
+        <span class="cov8" title="1">return dataFinalPlaylist, nil</span>
+}
+
+func (pl *PlaylistServiceImpl) DeletePlaylist(ctx context.Context, id int) error <span class="cov8" title="1">{
+        err := pl.PlaylistRepository.DeletePlaylist(ctx, id)
+        if err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+func (pl *PlaylistServiceImpl) EditPlaylist(ctx context.Context, playlist Playlist, id int) (Playlist, error) <span class="cov8" title="1">{
+        editPlaylist, err := pl.PlaylistRepository.EditPlaylist(ctx, playlist.ToRecordUser(), id)
+        if err != nil </span><span class="cov8" title="1">{
+                return Playlist{}, err
+        }</span>
+        <span class="cov8" title="1">playlist.FromRecordPlaylist(editPlaylist)
+
+        return playlist,nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package servplaylistdetail
+
+import (
+        "log"
+        "playlist-saver/model/record"
+)
+
+type PlaylistDetail struct {
+        Id            int
+        PlaylistId    int
+        YoutubeDataId string
+        YoutubeData   YoutubeData
+}
+
+type YoutubeData struct {
+        YoutubeLink string
+        Title       string
+        ChannelId   string
+        PublishedAt string
+        Description string
+}
+
+func (pd *PlaylistDetail) ToRecordPlaylistDetail() record.PlaylistDetail <span class="cov8" title="1">{
+        recordUser := record.PlaylistDetail{}
+        log.Print("pd youtube Id", pd.YoutubeDataId)
+        recordUser.Id = pd.Id
+        recordUser.PlaylistId = pd.PlaylistId
+        recordUser.YoutubeDataId = pd.YoutubeDataId
+        recordUser.YoutubeData.YoutubeLink = pd.YoutubeData.YoutubeLink
+        recordUser.YoutubeData.Title = pd.YoutubeData.Title
+        recordUser.YoutubeData.ChannelId = pd.YoutubeData.ChannelId
+        recordUser.YoutubeData.PublishedAt = pd.YoutubeData.PublishedAt
+        recordUser.YoutubeData.Description = pd.YoutubeData.Description
+
+        return recordUser
+}</span>
+
+func (pd *PlaylistDetail) FromRecordPlaylistDetail(record record.PlaylistDetail) <span class="cov8" title="1">{
+        pd.Id = record.Id
+        pd.PlaylistId = record.PlaylistId
+        pd.YoutubeDataId = record.YoutubeDataId
+        pd.YoutubeData.YoutubeLink = record.YoutubeData.YoutubeLink
+        pd.YoutubeData.Title = record.YoutubeData.Title
+        pd.YoutubeData.ChannelId = record.YoutubeData.ChannelId
+        pd.YoutubeData.PublishedAt = record.YoutubeData.PublishedAt
+        pd.YoutubeData.Description = record.YoutubeData.Description
+}</span>
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package servplaylistdetail
+
+import (
+        "context"
+        "playlist-saver/repository/repoplaylistdetail"
+        "playlist-saver/repository/reposearch"
+)
+
+type PlaylistDetailServiceImpl struct {
+        PlaylistDetailRepository repoplaylistdetail.PlaylistDetailRepository
+        SearchRepository         reposearch.SearchRepository
+}
+
+func NewPlaylistDetail(PlaylistDetailRepository repoplaylistdetail.PlaylistDetailRepository, SearchRepository reposearch.SearchRepository) PlaylistDetailService <span class="cov8" title="1">{
+        return &amp;PlaylistDetailServiceImpl{
+                PlaylistDetailRepository: PlaylistDetailRepository,
+                SearchRepository:         SearchRepository,
+        }
+}</span>
+
+func (pds *PlaylistDetailServiceImpl) AddYoutubeToPlaylist(ctx context.Context, detail PlaylistDetail) (PlaylistDetail, error) <span class="cov8" title="1">{
+        search := pds.SearchRepository.SearchYtById(ctx, detail.YoutubeDataId)
+        youtube := "youtube.com/watch?v="+search.YoutubeLink
+        detailNew := PlaylistDetail{
+                Id: detail.Id,
+                PlaylistId: detail.PlaylistId,
+                YoutubeDataId: detail.YoutubeDataId,
+                YoutubeData: YoutubeData{
+                        YoutubeLink: youtube,
+                        Title: search.Title,
+                        ChannelId: search.ChannelId,
+                        PublishedAt: search.PublishedAt,
+                        Description: search.Description,
+                },
+        }
+
+        addDetail := detailNew.ToRecordPlaylistDetail()
+        resultPlaylist := pds.PlaylistDetailRepository.AddYoutubeToPlaylist(ctx, addDetail)
+        detail.FromRecordPlaylistDetail(resultPlaylist)
+
+        return detail, nil
+}</span>
+
+
+func (pdr *PlaylistDetailServiceImpl) DeleteYoutubeDataFromPlaylist(ctx context.Context, id int) error <span class="cov8" title="1">{
+        err := pdr.PlaylistDetailRepository.DeleteYoutubeDataFromPlaylist(ctx, id)
+        if err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+        <span class="cov8" title="1">return nil</span>
+}</pre>
+		
+		<pre class="file" id="file4" style="display: none">package servsearch
+
+import (
+        "playlist-saver/model/record"
+)
+
+type YoutubeData struct {
+        YoutubeLink string
+        Title       string
+        ChannelId   string
+        PublishedAt string
+        Description string
+}
+
+func (d *YoutubeData) FromRecordYoutubeNotArray(data record.YoutubeData) <span class="cov8" title="1">{
+        d.YoutubeLink = data.YoutubeLink
+        d.Title = data.Title
+        d.ChannelId = data.ChannelId
+        d.PublishedAt = data.PublishedAt
+        d.Description = data.Description
+}</span>
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package servsearch
+
+import (
+        "context"
+        "errors"
+        "log"
+        "playlist-saver/repository/reposearch"
+)
+
+type SearchServiceImpl struct {
+        SearchRepository reposearch.SearchRepository
+}
+
+func NewSearchService(SearchRepository reposearch.SearchRepository) SearchService <span class="cov8" title="1">{
+        return &amp;SearchServiceImpl{
+                SearchRepository: SearchRepository,
+        }
+}</span>
+
+func (sr *SearchServiceImpl) GetByUrlId(ctx context.Context, Id string) YoutubeData <span class="cov8" title="1">{
+        dataYoutube := YoutubeData{}
+        if len(Id) == 0 </span><span class="cov0" title="0">{
+                panic(errors.New("Id can't be blank"))</span>
+        }
+
+        <span class="cov8" title="1">searchResult := sr.SearchRepository.GetByUrlId(ctx, Id)
+        dataYoutube.FromRecordYoutubeNotArray(searchResult)
+
+        return dataYoutube</span>
+}
+
+func (sr *SearchServiceImpl) SearchYtByParam(ctx context.Context, Search string) ([]YoutubeData, error) <span class="cov8" title="1">{
+
+        if len(Search) == 0 </span><span class="cov8" title="1">{
+                return nil, errors.New("You want to search, but you leave the form blank.")
+        }</span>
+
+        <span class="cov8" title="1">dataFinal := make([]YoutubeData, 0)
+        youtubeResult, err := sr.SearchRepository.SearchYtByParam(ctx, Search)
+        if err != nil</span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+        //log.Print("Print data dari Youtube Reesult Service", len(youtubeResult))
+        //dataYoutube.FromRecordYoutube(youtubeResult)
+
+        <span class="cov8" title="1">for _, values := range youtubeResult </span><span class="cov8" title="1">{
+                dataYoutube := YoutubeData{}
+                log.Println("ChannelService youtube", values.ChannelId)
+                dataYoutube.YoutubeLink = values.YoutubeLink
+                dataYoutube.Title = values.Title
+                dataYoutube.ChannelId = values.ChannelId
+                dataYoutube.PublishedAt = values.PublishedAt
+                dataYoutube.Description = values.Description
+                dataFinal = append(dataFinal, dataYoutube)
+        }</span>
+
+        //log.Print("Print daata Serviceee", len(dataFinal))
+
+        <span class="cov8" title="1">return dataFinal, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package servstatus
+
+import (
+        "context"
+        "playlist-saver/repository/repostatus"
+)
+
+type StatusServiceImpl struct {
+        StatusRepository repostatus.StatusRepository
+}
+
+func NewStatusService(StatusRepository repostatus.StatusRepository) StatusService <span class="cov8" title="1">{
+        return &amp;StatusServiceImpl{
+                StatusRepository: StatusRepository,
+        }
+}</span>
+
+
+func (ssi *StatusServiceImpl) GetAllStatus(ctx context.Context) ([]Status, error) <span class="cov8" title="1">{
+        statusRecord := make([]Status, 0)
+        status, err := ssi.StatusRepository.GetAllStatus(ctx)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil,err
+        }</span>
+        <span class="cov8" title="1">for _, values := range status </span><span class="cov8" title="1">{
+                statusResponse := Status{}
+                statusResponse.Id = values.Id
+                statusResponse.Name = values.Name
+                statusResponse.TokenId = values.TokenId
+                statusResponse.Token.TokensId = values.Token.TokensId
+                statusRecord = append(statusRecord, statusResponse)
+        }</span>
+
+        <span class="cov8" title="1">return statusRecord,nil</span>
+}
+
+func (ssi *StatusServiceImpl) CronPremiumChecker(ctx context.Context) error <span class="cov8" title="1">{
+
+        //statusData := make([]Status,0)
+        status, err := ssi.StatusRepository.GetPremiumStatus(ctx)
+        if err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">for _,values := range status</span><span class="cov8" title="1">{
+                err := ssi.StatusRepository.UpdateStatus(ctx, values.UserId)
+                if err != nil </span><span class="cov8" title="1">{
+                        return err
+                }</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package servtoken
+
+import (
+        "context"
+        "playlist-saver/model/record"
+        "playlist-saver/repository/repotoken"
+        "playlist-saver/utility"
+)
+
+type TokenServiceImpl struct{
+        TokenRepository repotoken.TokenRepository
+}
+
+
+func NewTokenService(TokenRepository repotoken.TokenRepository) TokenService <span class="cov8" title="1">{
+        return &amp;TokenServiceImpl{
+                TokenRepository: TokenRepository,
+        }
+}</span>
+
+
+func (tsi *TokenServiceImpl) AddToken(ctx context.Context) error <span class="cov8" title="1">{
+        //* simple docs
+        //* here admin where create 5 premium tokens at a time
+        //******
+        token := Token{}
+        for i:=0; i&lt;5; i++</span><span class="cov8" title="1">{
+                tokens := utility.GenerateSecureToken(26)
+                response := record.Token{
+                        TokensId: tokens,
+                        CreatedAt: token.CreatedAt,
+                        UpdatedAt: token.UpdatedAt,
+                }
+                err := tsi.TokenRepository.PostToken(ctx, response)
+                if err != nil </span><span class="cov8" title="1">{
+                        return err
+                }</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+
+}
+
+func (tsi *TokenServiceImpl) GetToken(ctx context.Context) ([]Token, error) <span class="cov8" title="1">{
+        //* simple docs
+        //* here admin can get all more
+        //******
+
+        dataFinal := make([]Token, 0)
+
+        TokenResult, err := tsi.TokenRepository.GetToken(ctx)
+        if err != nil </span><span class="cov8" title="1">{
+                return dataFinal, err
+        }</span>
+
+        <span class="cov8" title="1">for _ , values := range TokenResult</span><span class="cov8" title="1">{
+                response := Token{}
+                response.Id = values.TokensId
+                response.CreatedAt = values.CreatedAt
+                response.UpdatedAt = values.UpdatedAt
+                dataFinal = append(dataFinal, response)
+        }</span>
+
+        <span class="cov8" title="1">return dataFinal, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package servuser
+
+import (
+        validation "github.com/go-ozzo/ozzo-validation"
+        "github.com/go-ozzo/ozzo-validation/is"
+        "gopkg.in/guregu/null.v4"
+        "playlist-saver/model/record"
+        "time"
+)
+
+type User struct {
+        Id        int
+        Name      string
+        Password  string
+        Email     string
+        Birthday  time.Time
+        Gender    string
+        Role      string
+        CreatedAt time.Time
+        UpdatedAt time.Time
+        Status    Status
+}
+
+type Status struct {
+        Id        int
+        Name      string
+        UserId    int
+        TokenId   int
+        CreatedAt time.Time
+        UpdatedAt time.Time
+        ExpiredAt null.Time
+}
+
+func (u *User) ToRecordUser() record.User <span class="cov8" title="1">{
+        recordUser := record.User{}
+        recordUser.Name = u.Name
+        recordUser.Email = u.Email
+        recordUser.Password = u.Password
+        recordUser.Birthday = u.Birthday
+        recordUser.Gender = u.Gender
+        recordUser.Role = u.Role
+        recordUser.Status.Name = u.Status.Name
+        recordUser.Status.CreatedAt = u.Status.CreatedAt
+        recordUser.Status.UpdatedAt = u.Status.UpdatedAt
+        return recordUser
+}</span>
+
+func (u *User) FromRecordUser(recordUser record.User) <span class="cov8" title="1">{
+        u.Name = recordUser.Name
+        u.Email = recordUser.Email
+        u.Birthday = recordUser.Birthday
+        u.Role = recordUser.Role
+        u.Status.Name = recordUser.Status.Name
+        u.Status.CreatedAt = recordUser.Status.CreatedAt
+        u.Status.UpdatedAt = recordUser.Status.UpdatedAt
+}</span>
+
+func (u User) Validate() error <span class="cov8" title="1">{
+        return validation.ValidateStruct(&amp;u,
+                //validasi Name tidak boleh kosong
+                validation.Field(&amp;u.Name, validation.Required),
+                //Validasi email regex, dan tidak boleh kosong
+                validation.Field(&amp;u.Email, validation.Required, is.Email),
+                //Validasi password tidak boleh kosong, dan minimal panjang 6 dan max 12
+                validation.Field(&amp;u.Password, validation.Required, validation.Length(6, 12)),
+        )
+}</span>
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package servuser
+
+import (
+        "context"
+        "errors"
+        "playlist-saver/app/middleware"
+        "playlist-saver/repository/repotoken"
+        "playlist-saver/repository/repouser"
+        "playlist-saver/utility"
+)
+
+type UserServiceImpl struct {
+        UserRepository  repouser.UserRepository
+        jwtAuth         *middleware.ConfigJWT
+        TokenRepository repotoken.TokenRepository
+}
+
+func NewUserService(UserRepository repouser.UserRepository, jwtAuth *middleware.ConfigJWT, TokenRepository repotoken.TokenRepository) UserService <span class="cov8" title="1">{
+        return &amp;UserServiceImpl{
+                UserRepository:  UserRepository,
+                jwtAuth:         jwtAuth,
+                TokenRepository: TokenRepository,
+        }
+}</span>
+
+func (service *UserServiceImpl) Register(ctx context.Context, dataUser User) (User, error) <span class="cov8" title="1">{
+        err := dataUser.Validate()
+        if err != nil </span><span class="cov8" title="1">{
+                return dataUser, err
+        }</span>
+        <span class="cov8" title="1">password, err := utility.HashPassword(dataUser.Password)
+        if err != nil </span><span class="cov0" title="0">{
+                return dataUser, err
+        }</span>
+        <span class="cov8" title="1">if dataUser.Email == "bjanardana@google.com"</span><span class="cov8" title="1">{
+                dataUser.Role = "ADMIN"
+        }</span>
+        <span class="cov8" title="1">dataUser.Password = password
+        dataUser.Status.Name = "FREE"
+
+        userRecord := dataUser.ToRecordUser()
+        insertedUser, err := service.UserRepository.Register(ctx, userRecord)
+        if err != nil </span><span class="cov0" title="0">{
+                return dataUser, err
+        }</span>
+        <span class="cov8" title="1">dataUser.FromRecordUser(insertedUser)
+
+        return dataUser, nil</span>
+}
+
+func (service *UserServiceImpl) Login(ctx context.Context, email, password string) (string, error) <span class="cov8" title="1">{
+        if len(email) == 0 || len(password) == 0 </span><span class="cov8" title="1">{
+                return "", errors.New("dont't leave a blank form")
+        }</span>
+
+        <span class="cov8" title="1">userRecord, err := service.UserRepository.Login(ctx, email)
+        if err != nil </span><span class="cov0" title="0">{
+                return "", err
+        }</span>
+        <span class="cov8" title="1">match := utility.CheckPasswordHash(password, userRecord.Password)
+
+        if !match </span><span class="cov8" title="1">{
+                return "", errors.New("password doesn't match")
+        }</span>
+
+        <span class="cov8" title="1">jwt := service.jwtAuth.GenerateToken(userRecord.Id, userRecord.Name, userRecord.Role, userRecord.Status.Name)
+
+        return jwt, nil</span>
+}
+
+func (service *UserServiceImpl) GetAllUser(ctx context.Context, admin string) ([]User, error) <span class="cov8" title="1">{
+
+        if admin != "ADMIN" </span><span class="cov8" title="1">{
+                return nil, errors.New("you're not admin, can't fetch all data")
+        }</span>
+
+        <span class="cov8" title="1">dataFinal := make([]User, 0)
+        UserResult, err := service.UserRepository.GetAllUser(ctx)
+        if err != nil </span><span class="cov0" title="0">{
+                return dataFinal, err
+        }</span>
+        <span class="cov8" title="1">for _, values := range UserResult </span><span class="cov8" title="1">{
+                dataUser := User{}
+                dataUser.Name = values.Name
+                dataUser.Email = values.Email
+                dataUser.Birthday = values.Birthday
+                dataUser.Gender = values.Gender
+                dataUser.Role = values.Role
+                dataUser.CreatedAt = values.CreatedAt
+                dataUser.UpdatedAt = values.UpdatedAt
+                dataUser.Status.Id = values.Status.Id
+                dataUser.Status.Name = values.Status.Name
+                dataUser.Status.CreatedAt = values.Status.CreatedAt
+                dataUser.Status.UpdatedAt = values.Status.UpdatedAt
+                dataFinal = append(dataFinal, dataUser)
+        }</span>
+        <span class="cov8" title="1">return dataFinal, nil</span>
+}
+
+func (service *UserServiceImpl) GetUserById(ctx context.Context, id int) (User, error) <span class="cov8" title="1">{
+        result, err := service.UserRepository.UserFindById(ctx, id)
+        finalResult := User{
+                Name:   result.Name,
+                Email:  result.Email,
+                Gender: result.Gender,
+                Role:   result.Role,
+        }
+        if err != nil </span><span class="cov0" title="0">{
+                return User{}, err
+        }</span>
+        <span class="cov8" title="1">return finalResult, nil</span>
+}
+
+func (service *UserServiceImpl) UpdateUser(ctx context.Context, user User, id int) error <span class="cov8" title="1">{
+        getUserById, err := service.UserRepository.UserFindById(ctx, id)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">match := utility.CheckPasswordHash(user.Password, getUserById.Password)
+        if !match </span><span class="cov8" title="1">{
+                password, err := utility.HashPassword(user.Password)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov8" title="1">user.Password = password</span>
+        }
+        <span class="cov8" title="1">toRecord := user.ToRecordUser()
+        err = service.UserRepository.UpdateUser(ctx, toRecord, id)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (service *UserServiceImpl) UserAddToken(ctx context.Context, id int, token int, tokenNumber string) error <span class="cov8" title="1">{
+
+        checkToken, err := service.TokenRepository.CheckToken(ctx, tokenNumber)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">if checkToken </span><span class="cov8" title="1">{
+                err := service.UserRepository.UserAddToken(ctx, id, token)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
