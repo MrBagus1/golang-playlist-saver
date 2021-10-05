@@ -48,7 +48,7 @@ type mySQLConfig struct {
 	Host string
 	Port string
 	User string
-	//Password string
+	Password string
 	DBName string
 }
 
@@ -57,7 +57,7 @@ func newMySQLConfig(configuration config.Config) *mySQLConfig {
 		Host: configuration.Get("DB_HOST"),
 		Port: configuration.Get("DB_PORT"),
 		User: configuration.Get("DB_USER"),
-		//Password: configuration.Get("DB_PASSWORD"),
+		Password: configuration.Get("DB_PASSWORD"),
 		DBName: configuration.Get("DB_NAME"),
 	}
 
@@ -66,9 +66,9 @@ func newMySQLConfig(configuration config.Config) *mySQLConfig {
 
 func (dbConfig *mySQLConfig) String() string {
 	return fmt.Sprintf(
-		"%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
+		"%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		dbConfig.User,
-		//dbConfig.Password,
+		dbConfig.Password,
 		dbConfig.Host,
 		dbConfig.Port,
 		dbConfig.DBName,

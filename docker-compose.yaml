@@ -1,0 +1,31 @@
+version: "3.9"
+services:
+#  Mysql
+  database:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_USER: user
+      MYSQL_DATABASE: playlist_saver
+      MYSQL_PASSWORD : user
+
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 9191:8080
+
+  app:
+    container_name: playlist_saver_km
+    build: .
+    restart: always
+    ports:
+      - 8080:8080
+    volumes:
+      - .:/usr/src/app/
+
