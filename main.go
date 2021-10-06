@@ -33,11 +33,10 @@ import (
 	"playlist-saver/service/servuser"
 	"playlist-saver/utility"
 	"strconv"
+	_ "github.com/joho/godotenv/autoload"
 )
 
 func main() {
-	err := godotenv.Load()
-	exceptions.PanicIfError(err)
 	e := echo.New()
 	e.Use(middleware.RecoverWithConfig(middleware.RecoverConfig{
 		StackSize:       1 << 10, // 1 KB
