@@ -68,7 +68,7 @@ jobs:
             StrictHostKeyChecking=no
           END
       - name: Connect EC2 & Remove all container & pull from registry & and start docker
-        run: ssh development 'docker rm -f $(docker ps -a -q) || true && docker pull ryudential/playlist_saver_km:1.0.0 && docker run --env JWT_SECRET=$JWT_SECRET --env JWT_EXPIRED=$JWT_EXPIRED --env DB_USER=$DB_USER --env DB_PASSWORD=$DB_PASSWORD --env DB_HOST=$DB_HOST --env DB_PORT=$DB_PORT --env DB_NAME=$DB_NAME --env YT_SECRET=$YT_SECRET -d -p 8080:8080 --name playlist_saver ryudential/playlist_saver_km:1.0.0'
+        run: ssh development 'docker rm -vf $(docker ps -a -q) && docker pull ryudential/playlist_saver_km:1.0.0 && docker run --env JWT_SECRET=$JWT_SECRET --env JWT_EXPIRED=$JWT_EXPIRED --env DB_USER=$DB_USER --env DB_PASSWORD=$DB_PASSWORD --env DB_HOST=$DB_HOST --env DB_PORT=$DB_PORT --env DB_NAME=$DB_NAME --env YT_SECRET=$YT_SECRET -d -p 8080:8080 --name playlist_saver ryudential/playlist_saver_km:1.0.0'
           
 
 
