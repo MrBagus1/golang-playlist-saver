@@ -33,6 +33,7 @@ import (
 	"playlist-saver/service/servuser"
 	"playlist-saver/utility"
 	"strconv"
+	_ "github.com/joho/godotenv/autoload"
 )
 
 func main() {
