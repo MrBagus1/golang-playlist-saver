@@ -32,8 +32,8 @@ jobs:
       - name: login registry docker hub
         uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME}}
-          password: ${{ secrets.DOCKER_HUB_PASSWORD}}
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
       - name: push image to registry docker hub
         run: docker push ryudential/playlist_saver_km:1.0.0
 
