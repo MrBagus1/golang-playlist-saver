@@ -2,10 +2,10 @@ package main
 
 import (
 	"github.com/jasonlvhit/gocron"
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"log"
-	_ "github.com/joho/godotenv/autoload"
 	"net/http"
 	"os"
 	"playlist-saver/app/config"
@@ -37,6 +37,8 @@ import (
 )
 
 func main() {
+	err := godotenv.Load()
+	exceptions.PanicIfError(err)
 	e := echo.New()
 	e.Use(middleware.RecoverWithConfig(middleware.RecoverConfig{
 		StackSize:       1 << 10, // 1 KB
@@ -86,7 +88,7 @@ func main() {
 		PlaylistController: plyCtrl,
 		DetailController:   detailCtrl,
 		TokenController:    tokenCtrl,
-		StatusController: statusCtrl,
+		StatusController:   statusCtrl,
 	}
 	routesInit.Registration(e)
 
@@ -94,7 +96,7 @@ func main() {
 
 	//log.Println("TESTING", utility.TaskCheckPremium())
 	gocron.Start()
-	err := gocron.Every(1).Minutes().Do(utility.TaskCheckPremium)
+	err = gocron.Every(1).Minutes().Do(utility.TaskCheckPremium)
 	if err != nil {
 		exceptions.PanicIfError(err)
 	}
