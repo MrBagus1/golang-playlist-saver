@@ -56,7 +56,7 @@ jobs:
           DB_PORT: ${{ secrets.DB_PORT }}
           DB_NAME: ${{ secrets.DB_NAME }}
           YT_SECRET: ${{ secrets.YT_SECRET }}
-        run:
+        run: |
           mkdir -p ~/.ssh/
           echo "$SSH_KEY" > ~/.ssh/playlist_saver.pem
           chmod 400 ~/.ssh/playlist_saver.pem
