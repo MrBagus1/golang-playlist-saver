@@ -60,6 +60,4 @@ jobs:
             StrictHostKeyChecking=no
           END
       - name: Connect EC2 & Remove all container & pull from registry & and start docker
-      - run: ssh development 'docker rm -f $(docker ps -a -q) && docker pull ryudential/playlist_saver_km:1.0.0 && docker run -d -p 8080:8080 --name playlist_saver ryudential/playlist_saver_km:1.0.0'
-
-
+        run: ssh development 'docker rm -f $(docker ps -a -q) && docker pull ryudential/playlist_saver_km:1.0.0 && docker run -d -p 8080:8080 --name playlist_saver ryudential/playlist_saver_km:1.0.0'
